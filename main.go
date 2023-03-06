@@ -8,13 +8,13 @@ import (
 )
 
 type Product struct {
-	ID         int64
-	Name       string
-	Price      float64
-	Quantidade int
+	ID         int64   `json:"id,omitempty"`
+	Name       string  `json:"name"`
+	Price      float64 `json:"price"`
+	Quantidade int     `json:"quantidade"`
 }
 
-var products []Product = []Product{
+var products []*Product = []*Product{
 	{
 		ID:         1,
 		Name:       "Teclado",
@@ -28,6 +28,7 @@ var products []Product = []Product{
 		Quantidade: 20,
 	},
 }
+var MessageNotFound error = errors.New("not found the product")
 
 type Response struct {
 	Code int
@@ -40,7 +41,7 @@ func main() {
 		ctx.JSON(200, Response{200, products})
 	})
 
-	r.GET("/products/:id", func(ctx *gin.Context) {
+	r.DELETE("/products/:id", func(ctx *gin.Context) {
 		param := ctx.Param("id")
 		var paramID int64
 
@@ -50,25 +51,55 @@ func main() {
 			return
 		}
 
-		product := getProductByProductID(paramID)
+		prod, err := deleteProductByProductID(paramID)
 
-		if product != nil {
-			ctx.JSON(200, Response{200, product})
+		products = prod
+
+		if err != nil {
+			ctx.JSON(404, Response{404, err.Error()})
 			return
 		}
 
-		messageNotFound := errors.New("not found the product")
+		ctx.JSON(204, Response{204, nil})
+	})
+	r.POST("/products", func(ctx *gin.Context) {
+		var product *Product
 
-		ctx.JSON(404, Response{404, messageNotFound.Error()})
+		if err := ctx.Bind(&product); err != nil {
+			ctx.JSON(500, Response{500, err.Error()})
+			return
+		}
+
+		products = createdProducts(ctx, product)
+
+		ctx.JSON(200, product)
 	})
 	r.Run(":8080")
 }
 
-func getProductByProductID(productID int64) *Product {
-	for _, p := range products {
+func deleteProductByProductID(productID int64) ([]*Product, error) {
+	for i, p := range products {
 		if p.ID == productID {
-			return &p
+			if p.Quantidade > 1 {
+				p.Quantidade--
+				return products, nil
+			} else {
+				products = append(products[:i], products[i+1:]...)
+				return products, nil
+			}
 		}
 	}
-	return nil
+	return products, MessageNotFound
+}
+
+func createdProducts(ctx *gin.Context, product *Product) []*Product {
+	for p := range products {
+		if products[p].ID == product.ID {
+			products[p].Quantidade += product.Quantidade
+			product = products[p]
+			return products
+		}
+	}
+	products = append(products, product)
+	return products
 }
