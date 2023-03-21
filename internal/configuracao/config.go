@@ -9,7 +9,7 @@ const (
 	/* Products - rotas de listagem e criação de um novo produto */
 	Products = "/products"
 
-	/* ProductsID - usado em rotas que usa o id do produto para uma alteração  */
+	/* ProductsID - usado em rotas que usa o id do produto para uma alteração e leitura  */
 	ProductsID = "/products/:id"
 
 	/* ProductsIDQuatidade - altera o campo de quantidade de um produto */
@@ -21,6 +21,6 @@ func InitApp(router *gin.Engine) {
 	router.GET(Products, c.GetProductsAll)
 	router.GET(ProductsID, c.GetProductsByID)
 	router.POST(Products, c.CreateProducts)
-	router.PATCH(ProductsIDQuatidade, c.UpdateProducts)
+	router.PATCH(ProductsIDQuatidade, c.UpdateProductsQuantidade)
 	router.DELETE(ProductsID, c.DeleteProducts)
 }

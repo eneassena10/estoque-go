@@ -8,29 +8,56 @@ type Product struct {
 }
 
 /*
-	Exemplo abaixo de um ponteiro de list
+Exemplo abaixo de um ponteiro de list
 */
-//products2 *[]Product
-var products []*Product = []*Product{
-	{
-		ID:         1,
-		Name:       "Teclado",
-		Price:      30,
-		Quantidade: 2,
-	},
-	{
-		ID:         2,
-		Name:       "Teclado 2",
-		Price:      35,
-		Quantidade: 20,
-	},
-	{
-		ID:         3,
-		Name:       "Mouse",
-		Price:      55,
-		Quantidade: 60,
-	},
-}
+var (
+	Products2 *[]Product = &[]Product{
+		{
+			ID:         1,
+			Name:       "Teclado",
+			Price:      30,
+			Quantidade: 2,
+		},
+		{
+			ID:         2,
+			Name:       "Teclado 2",
+			Price:      35,
+			Quantidade: 20,
+		},
+		{
+			ID:         3,
+			Name:       "Mouse",
+			Price:      55,
+			Quantidade: 60,
+		},
+		{
+			ID:         4,
+			Name:       "Fone de Ouvido",
+			Price:      523,
+			Quantidade: 1,
+		},
+	}
+	products []*Product = []*Product{
+		{
+			ID:         1,
+			Name:       "Teclado",
+			Price:      30,
+			Quantidade: 2,
+		},
+		{
+			ID:         2,
+			Name:       "Teclado 2",
+			Price:      35,
+			Quantidade: 20,
+		},
+		{
+			ID:         3,
+			Name:       "Mouse",
+			Price:      55,
+			Quantidade: 60,
+		},
+	}
+)
 
 type Response struct {
 	Code int
