@@ -16,7 +16,7 @@ func NewControllers() *Controllers {
 }
 
 func (c *Controllers) GetProductsAll(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, Response{http.StatusOK, Products2})
+	ctx.JSON(http.StatusOK, Response{http.StatusOK, products})
 }
 
 func (c *Controllers) GetProductsByID(ctx *gin.Context) {
@@ -48,13 +48,6 @@ func (c *Controllers) CreateProducts(ctx *gin.Context) {
 
 	product.ID = products[len(products)-1].ID + 1
 
-	/*for i, p := range *Products2 {
-		if len(*Products2)-1 != i {
-			continue
-		}
-		product.ID = p.ID + 1
-		break
-	}*/
 	products = append(products, product)
 
 	ctx.JSON(http.StatusOK, Response{http.StatusOK, product})
