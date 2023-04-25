@@ -1,5 +1,7 @@
 package controllers
 
+import "github.com/gin-gonic/gin"
+
 type Product struct {
 	ID         int     `json:"id,omitempty"`
 	Name       string  `json:"name"`
@@ -37,3 +39,13 @@ var mapMessageHttp = map[int]string{
 	200: "Sucess",
 	404: "Not Found",
 }
+
+type IControllers interface {
+	GetProductsAll(ctx *gin.Context)
+	GetProductsByID(ctx *gin.Context)
+	CreateProducts(ctx *gin.Context)
+	UpdateProductsQuantidade(ctx *gin.Context)
+	DeleteProducts(ctx *gin.Context)
+}
+
+var ProductPathName = "./internal/controllers/products.json"

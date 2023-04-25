@@ -3,15 +3,16 @@ package controllers
 import (
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-/* Controllers de Products */
+/*
+Controllers de Products
+*/
 type Controllers struct{}
 
-func NewControllers() *Controllers {
+func NewControllers() IControllers {
 	return &Controllers{}
 }
 
@@ -20,22 +21,19 @@ func (c *Controllers) GetProductsAll(ctx *gin.Context) {
 }
 
 func (c *Controllers) GetProductsByID(ctx *gin.Context) {
-	param := ctx.Param("id")
-
-	paramID, err := strconv.Atoi(param)
-	if err != nil {
+	var idProduct Product
+	if err := ctx.BindJSON(&idProduct); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
 
-	product := getProductByProductID(paramID)
-
-	if product != nil {
-		ctx.JSON(http.StatusOK, Response{http.StatusOK, product})
+	product := c.getProductByProductID(idProduct.ID)
+	if product == nil {
+		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, nil})
 		return
 	}
 
-	ctx.JSON(http.StatusNotFound, Response{http.StatusNotFound, mapMessageHttp[http.StatusNotFound]})
+	ctx.JSON(http.StatusOK, Response{http.StatusOK, product})
 }
 
 func (c *Controllers) CreateProducts(ctx *gin.Context) {
@@ -45,8 +43,11 @@ func (c *Controllers) CreateProducts(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
-
-	product.ID = products[len(products)-1].ID + 1
+	if len(products) > 0 {
+		product.ID = products[len(products)-1].ID + 1
+	} else {
+		product.ID = 1
+	}
 
 	products = append(products, product)
 
@@ -54,63 +55,31 @@ func (c *Controllers) CreateProducts(ctx *gin.Context) {
 }
 
 func (c *Controllers) UpdateProductsQuantidade(ctx *gin.Context) {
-	paramIDProductStr := ctx.Param("id")
-	paramQuantidadeStr := ctx.Param("quantidade")
-
-	paramQuantidade, err := strconv.Atoi(paramQuantidadeStr)
-	if err != nil {
+	var productTheRequest *Product
+	if err := ctx.BindJSON(&productTheRequest); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
 
-	paramIDProduct, err := strconv.Atoi(paramIDProductStr)
-	if err != nil {
+	product, err := c.updateParcialProduct(productTheRequest)
+	if product == nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
-	}
-
-	if paramQuantidade < 0 {
-		err := errors.New("quantidade has value negative")
-		ctx.JSON(http.StatusBadRequest, Response{http.StatusBadRequest, err.Error()})
-		return
-	}
-
-	if p := getProductByProductID(paramIDProduct); p == nil {
-		ctx.JSON(http.StatusNotFound, Response{http.StatusNotFound, mapMessageHttp[http.StatusNotFound]})
-		return
-	}
-
-	var product *Product
-	for _, p := range products {
-		if p.ID == paramIDProduct {
-			p.Quantidade += paramQuantidade
-			product = p
-			break
-		}
 	}
 	ctx.JSON(http.StatusOK, Response{http.StatusOK, product})
 }
 
 func (c *Controllers) DeleteProducts(ctx *gin.Context) {
-	param := ctx.Param("id")
+	var product *Product
 
-	paramID, err := strconv.Atoi(param)
-	if err != nil {
+	if err := ctx.BindJSON(&product); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
-		return
-	}
-	if p := getProductByProductID(paramID); p == nil {
-		ctx.JSON(http.StatusOK, Response{http.StatusOK, mapMessageHttp[http.StatusOK]})
 		return
 	}
 
 	for i, p := range products {
-		if int(p.ID) == paramID {
-			if p.Quantidade == 1 {
-				products = append(products[:i], products[i+1:]...)
-				break
-			}
-			p.Quantidade--
+		if int(p.ID) == product.ID {
+			products = append(products[:i], products[i+1:]...)
 			break
 		}
 	}
@@ -118,11 +87,24 @@ func (c *Controllers) DeleteProducts(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, nil)
 }
 
-func getProductByProductID(productID int) *Product {
+func (c *Controllers) getProductByProductID(productID int) *Product {
 	for _, p := range products {
 		if p.ID == productID {
 			return p
 		}
 	}
 	return nil
+}
+
+func (c *Controllers) updateParcialProduct(p *Product) (*Product, error) {
+	product := c.getProductByProductID(p.ID)
+	if product == nil {
+		return &Product{}, errors.New("product not found")
+	}
+
+	if (product.Quantidade + p.Quantidade) >= 0 {
+		product.Quantidade += p.Quantidade
+	}
+
+	return product, nil
 }

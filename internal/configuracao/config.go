@@ -6,21 +6,18 @@ import (
 )
 
 const (
-	/* Products - rotas de listagem e criação de um novo produto */
+	// Products - rotas de listagem e criação de um novo produto
 	Products = "/products"
 
-	/* ProductsID - usado em rotas que usa o id do produto para uma alteração e leitura  */
-	ProductsID = "/products/:id"
-
-	/* ProductsIDQuatidade - altera o campo de quantidade de um produto */
-	ProductsIDQuatidade = "/products/:id/:quantidade"
+	// ProductsID - usado em rotas que usa o id do produto para uma alteração e leitura
+	ProductsList = "/products/list"
 )
 
 func InitApp(router *gin.Engine) {
 	c := controllers.NewControllers()
-	router.GET(Products, c.GetProductsAll)
-	router.GET(ProductsID, c.GetProductsByID)
+	router.GET(Products, c.GetProductsByID)
+	router.GET(ProductsList, c.GetProductsAll)
+	router.DELETE(Products, c.DeleteProducts)
 	router.POST(Products, c.CreateProducts)
-	router.PATCH(ProductsIDQuatidade, c.UpdateProductsQuantidade)
-	router.DELETE(ProductsID, c.DeleteProducts)
+	router.PATCH(Products, c.UpdateProductsQuantidade)
 }
