@@ -4,20 +4,29 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 )
 
 /*
 Controllers de Products
 */
-type Controllers struct{}
+type Controllers struct {
+	fileStore store.IStore
+}
 
-func NewControllers() IControllers {
-	return &Controllers{}
+func NewControllers(fileStore store.IStore) IControllers {
+	return &Controllers{fileStore: fileStore}
 }
 
 func (c *Controllers) GetProductsAll(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, Response{http.StatusOK, products})
+	var productFileJson []*Product
+	if err := c.fileStore.Read(&productFileJson); err != nil {
+		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, Response{http.StatusOK, productFileJson})
 }
 
 func (c *Controllers) GetProductsByID(ctx *gin.Context) {

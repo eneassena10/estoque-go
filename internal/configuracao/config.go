@@ -2,6 +2,7 @@ package configuracao
 
 import (
 	"github.com/eneassena10/estoque-go/internal/controllers"
+	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,7 +15,8 @@ const (
 )
 
 func InitApp(router *gin.Engine) {
-	c := controllers.NewControllers()
+	fs := store.NewFileStore(controllers.ProductPathName)
+	c := controllers.NewControllers(fs)
 	router.GET(Products, c.GetProductsByID)
 	router.GET(ProductsList, c.GetProductsAll)
 	router.DELETE(Products, c.DeleteProducts)
