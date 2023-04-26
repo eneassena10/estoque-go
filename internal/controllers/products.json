@@ -1,20 +1,32 @@
 [
-    {
-		"ID":         1,
-		"Name":       "Teclado",
-		"Price":      30,
-		"Quantidade": 2
-	},
-	{
-		"ID":         2,
-		"Name":       "Teclado 2",
-		"Price":      35,
-		"Quantidade": 20
-	},
-	{
-		"ID":         3,
-		"Name":       "Mouse",
-		"Price":      55,
-		"Quantidade": 600
-	}
+ {
+  "id": 2,
+  "name": "Teclado 2",
+  "price": 35,
+  "quantidade": 20
+ },
+ {
+  "id": 3,
+  "name": "Mouse",
+  "price": 55,
+  "quantidade": 10
+ },
+ {
+  "id": 4,
+  "name": "Smartphone Motorola G6 Play 23",
+  "price": 10654,
+  "quantidade": 10
+ },
+ {
+  "id": 7,
+  "name": "Tenis 50",
+  "price": 106,
+  "quantidade": 10
+ },
+ {
+  "id": 8,
+  "name": "Tenis 5",
+  "price": 156,
+  "quantidade": 120
+ }
 ]
