@@ -18,15 +18,15 @@
   "quantidade": 10
  },
  {
-  "id": 7,
-  "name": "Tenis 50",
-  "price": 106,
-  "quantidade": 10
- },
- {
   "id": 8,
   "name": "Tenis 5",
   "price": 156,
   "quantidade": 120
+ },
+ {
+  "id": 9,
+  "name": "Tenis 5",
+  "price": 156,
+  "quantidade": 280
  }
 ]
