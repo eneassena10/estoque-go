@@ -1,6 +1,7 @@
 package configuracao
 
 import (
+	"github.com/eneassena10/estoque-go/internal/auth"
 	"github.com/eneassena10/estoque-go/internal/controllers"
 	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
@@ -14,12 +15,27 @@ const (
 	ProductsList = "/products/list"
 )
 
-func InitApp(router *gin.Engine) {
-	fs := store.NewFileStore(controllers.ProductPathName)
-	c := controllers.NewControllers(fs)
-	router.GET(Products, c.GetProductsByID)
-	router.GET(ProductsList, c.GetProductsAll)
-	router.DELETE(Products, c.DeleteProducts)
-	router.POST(Products, c.CreateProducts)
-	router.PATCH(Products, c.UpdateProductsQuantidade)
+type App struct {
+	fileStore store.IStore
+	products  controllers.IControllers
+	user      auth.IUserController
+}
+type IApp interface {
+	InitApp(router *gin.Engine)
+}
+
+func NewApp(fs store.IStore, products controllers.IControllers, user auth.IUserController) IApp {
+	return &App{fileStore: fs, products: products, user: user}
+}
+
+func (a *App) InitApp(router *gin.Engine) {
+	router.GET(Products, a.products.GetProductsByID)
+	router.GET(ProductsList, a.products.GetProductsAll)
+	router.DELETE(Products, a.products.DeleteProducts)
+	router.POST(Products, a.products.CreateProducts)
+	router.PATCH(Products, a.products.UpdateProductsQuantidade)
+
+	router.POST("user/login", a.user.Logar)
+	router.POST("user/logout", a.user.Logout)
+	router.POST("user/create", a.user.Create)
 }

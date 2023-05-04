@@ -22,4 +22,4 @@ type IControllers interface {
 	DeleteProducts(ctx *gin.Context)
 }
 
-var ProductPathName = "./internal/controllers/products.json"
+var ProductPathName = "./products.json"
