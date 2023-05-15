@@ -71,7 +71,7 @@ func (c *Controllers) CreateProducts(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, Response{http.StatusOK, productList})
+	ctx.JSON(http.StatusOK, Response{http.StatusOK, productRequest})
 }
 
 func (c *Controllers) UpdateProductsQuantidade(ctx *gin.Context) {

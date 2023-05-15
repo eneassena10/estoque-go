@@ -25,6 +25,11 @@ func NewUserController() IUserController {
 }
 
 func (uc *UserController) Logar(ctx *gin.Context) {
+	var u domain.User
+	if err := ctx.BindJSON(&u); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, Response{Data: u, Error: err.Error()})
+		return
+	}
 	ctx.JSON(http.StatusOK, gin.H{"messager": "login realizado"})
 }
 

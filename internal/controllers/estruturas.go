@@ -4,7 +4,7 @@ import "github.com/gin-gonic/gin"
 
 type Product struct {
 	ID         int     `json:"id,omitempty"`
-	Name       string  `json:"name"`
+	Name       string  `json:"name" badin`
 	Price      float64 `json:"price"`
 	Quantidade int     `json:"quantidade"`
 }
