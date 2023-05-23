@@ -3,9 +3,18 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/eneassena10/estoque-go/internal/product/domain"
 	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 )
+
+type IControllers interface {
+	GetProductsAll(ctx *gin.Context)
+	GetProductsByID(ctx *gin.Context)
+	CreateProducts(ctx *gin.Context)
+	UpdateProductsQuantidade(ctx *gin.Context)
+	DeleteProducts(ctx *gin.Context)
+}
 
 /*
 Controllers de Products
@@ -19,7 +28,7 @@ func NewControllers(fileStore store.IStore) IControllers {
 }
 
 func (c *Controllers) GetProductsAll(ctx *gin.Context) {
-	var productFileJson *[]Product
+	var productFileJson *domain.ProductRequest
 	if err := c.fileStore.Read(&productFileJson); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
@@ -29,7 +38,7 @@ func (c *Controllers) GetProductsAll(ctx *gin.Context) {
 }
 
 func (c *Controllers) GetProductsByID(ctx *gin.Context) {
-	var p *Product
+	var p *domain.ProductRequest
 	if err := ctx.BindJSON(&p); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
@@ -45,14 +54,14 @@ func (c *Controllers) GetProductsByID(ctx *gin.Context) {
 }
 
 func (c *Controllers) CreateProducts(ctx *gin.Context) {
-	var productRequest *Product
+	var productRequest *domain.ProductRequest
 	err := ctx.ShouldBindJSON(&productRequest)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
 
-	var productList []*Product
+	var productList []*domain.ProductRequest
 	err = c.fileStore.Read(&productList)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
@@ -75,13 +84,13 @@ func (c *Controllers) CreateProducts(ctx *gin.Context) {
 }
 
 func (c *Controllers) UpdateProductsQuantidade(ctx *gin.Context) {
-	var product *Product
+	var product *domain.ProductRequest
 	if err := ctx.BindJSON(&product); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
 
-	var productList []*Product
+	var productList []*domain.ProductRequest
 	err := c.fileStore.Read(&productList)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
@@ -105,7 +114,7 @@ func (c *Controllers) UpdateProductsQuantidade(ctx *gin.Context) {
 }
 
 func (c *Controllers) DeleteProducts(ctx *gin.Context) {
-	var product *Product
+	var product *domain.ProductRequest
 
 	if err := ctx.BindJSON(&product); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
@@ -132,7 +141,7 @@ func (c *Controllers) DeleteProducts(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, nil)
 }
 
-func (c *Controllers) getProductByProductID(product *Product) *Product {
+func (c *Controllers) getProductByProductID(product *domain.ProductRequest) *domain.ProductRequest {
 	products, _ := c.loadListProducts()
 	for _, p := range products {
 		if p.ID == product.ID {
@@ -142,8 +151,8 @@ func (c *Controllers) getProductByProductID(product *Product) *Product {
 	return nil
 }
 
-func (c *Controllers) loadListProducts() ([]*Product, error) {
-	var p []*Product
+func (c *Controllers) loadListProducts() ([]*domain.ProductRequest, error) {
+	var p []*domain.ProductRequest
 	if err := c.fileStore.Read(&p); err != nil {
 		return p, err
 	}

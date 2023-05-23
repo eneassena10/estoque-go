@@ -1,8 +1,9 @@
 package configuracao
 
 import (
-	"github.com/eneassena10/estoque-go/internal/auth"
-	"github.com/eneassena10/estoque-go/internal/controllers"
+	"github.com/eneassena10/estoque-go/internal/product/controllers"
+	productControllers "github.com/eneassena10/estoque-go/internal/product/controllers"
+	userControllers "github.com/eneassena10/estoque-go/internal/user/controllers"
 	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 )
@@ -17,14 +18,14 @@ const (
 
 type App struct {
 	fileStore store.IStore
-	products  controllers.IControllers
-	user      auth.IUserController
+	products  productControllers.IControllers
+	user      userControllers.IUserController
 }
 type IApp interface {
 	InitApp(router *gin.Engine)
 }
 
-func NewApp(fs store.IStore, products controllers.IControllers, user auth.IUserController) IApp {
+func NewApp(fs store.IStore, products controllers.IControllers, user userControllers.IUserController) IApp {
 	return &App{fileStore: fs, products: products, user: user}
 }
 

@@ -7,9 +7,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/eneassena10/estoque-go/internal/auth"
 	config "github.com/eneassena10/estoque-go/internal/configuracao"
-	"github.com/eneassena10/estoque-go/internal/controllers"
+	productController "github.com/eneassena10/estoque-go/internal/product/controllers"
+	userController "github.com/eneassena10/estoque-go/internal/user/controllers"
+	service_user "github.com/eneassena10/estoque-go/internal/user/service"
 	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -31,9 +32,10 @@ func CreateServer(method, url, body string) *httptest.ResponseRecorder {
 	router := gin.Default()
 	productNamePath := "../products.json"
 	fileStore := store.NewFileStore(productNamePath)
-	handlers := controllers.NewControllers(fileStore)
-	userController := auth.NewUserController()
-	app := config.NewApp(fileStore, handlers,userController)
+	handlers := productController.NewControllers(fileStore)
+	service := service_user.NewServiceUser(fileStore)
+	userController := userController.NewUserController(service)
+	app := config.NewApp(fileStore, handlers, userController)
 	app.InitApp(router)
 	req, rr := CreateRequestTest(method, url, body)
 	router.ServeHTTP(rr, req)
