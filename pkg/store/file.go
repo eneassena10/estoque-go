@@ -2,6 +2,7 @@ package store
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 )
 
@@ -31,5 +32,12 @@ func (fs *FileStore) Read(data interface{}) error {
 	if err != nil {
 		return err
 	}
+	if err = json.Unmarshal(file, &data); err != nil {
+		return err
+	}
+	if &data == nil {
+		log.Println("not product registered")
+	}
+
 	return json.Unmarshal(file, &data)
 }
