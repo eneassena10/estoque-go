@@ -2,15 +2,17 @@ package controllers_test
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	productController "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
+	userController "github.com/eneassena10/estoque-go/internal/domain/user/controllers"
+	service_user "github.com/eneassena10/estoque-go/internal/domain/user/service"
+
 	config "github.com/eneassena10/estoque-go/internal/configuracao"
-	productController "github.com/eneassena10/estoque-go/internal/product/controllers"
-	userController "github.com/eneassena10/estoque-go/internal/user/controllers"
-	service_user "github.com/eneassena10/estoque-go/internal/user/service"
 	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -32,7 +34,7 @@ func CreateServer(method, url, body string) *httptest.ResponseRecorder {
 	router := gin.Default()
 	productNamePath := "../../data/products.json"
 	fileStore := store.NewFileStore(productNamePath)
-	handlers := productController.NewControllers(fileStore)
+	handlers := productController.NewControllers(fileStore, &sql.DB{})
 	service := service_user.NewServiceUser(fileStore)
 	userController := userController.NewUserController(service)
 	app := config.NewApp(fileStore, handlers, userController)

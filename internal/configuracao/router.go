@@ -1,9 +1,8 @@
 package configuracao
 
 import (
-	"github.com/eneassena10/estoque-go/internal/product/controllers"
-	productControllers "github.com/eneassena10/estoque-go/internal/product/controllers"
-	userControllers "github.com/eneassena10/estoque-go/internal/user/controllers"
+	productControllers "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
+	userControllers "github.com/eneassena10/estoque-go/internal/domain/user/controllers"
 	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 )
@@ -25,7 +24,7 @@ type IApp interface {
 	InitApp(router *gin.Engine)
 }
 
-func NewApp(fs store.IStore, products controllers.IControllers, user userControllers.IUserController) IApp {
+func NewApp(fs store.IStore, products productControllers.IControllers, user userControllers.IUserController) IApp {
 	return &App{fileStore: fs, products: products, user: user}
 }
 
@@ -34,7 +33,7 @@ func (a *App) InitApp(router *gin.Engine) {
 	router.GET(ProductsList, a.products.GetProductsAll)
 	router.DELETE(Products, a.products.DeleteProducts)
 	router.POST(Products, a.products.CreateProducts)
-	router.PATCH(Products, a.products.UpdateProductsQuantidade)
+	router.PATCH(Products, a.products.UpdateProductsCount)
 
 	router.POST("user/login", a.user.Logar)
 	router.POST("user/logout", a.user.Logout)
