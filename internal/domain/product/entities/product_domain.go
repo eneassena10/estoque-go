@@ -22,7 +22,7 @@ type IProductRepository interface {
 	GetProductsAll(ctx *gin.Context) *[]ProductRequest
 	GetProductsOne(ctx *gin.Context, product *ProductRequest) *ProductRequest
 	CreateProducts(ctx *gin.Context, product *ProductRequest) error
-	UpdateProductsCount(ctx *gin.Context, product *ProductRequest) error
+	UpdateProductsCount(ctx *gin.Context, oldProduct *ProductRequest, product *ProductRequest) error
 	DeleteProducts(ctx *gin.Context, product *ProductRequest) error
 }
 
@@ -30,6 +30,6 @@ type IPoductService interface {
 	GetProductsAll(ctx *gin.Context) *[]ProductRequest
 	GetProductsOne(ctx *gin.Context, product *ProductRequest) *ProductRequest
 	CreateProducts(ctx *gin.Context, product *ProductRequest) error
-	UpdateProductsCount(ctx *gin.Context, oldProduct, product *ProductRequest) error
+	UpdateProductsCount(ctx *gin.Context, oldProduct *ProductRequest) error
 	DeleteProducts(ctx *gin.Context, product *ProductRequest) error
 }

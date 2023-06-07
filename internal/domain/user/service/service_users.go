@@ -1,18 +1,19 @@
 package service_user
 
 import (
+	"database/sql"
 	"errors"
+
 	"github.com/eneassena10/estoque-go/internal/domain/user/domain"
 
-	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 )
 
 type ServiceUser struct {
-	DataBase store.IStore
+	DataBase *sql.DB
 }
 
-func NewServiceUser(db store.IStore) domain.IServiceUser {
+func NewServiceUser(db *sql.DB) domain.IServiceUser {
 	service := ServiceUser{DataBase: db}
 	return &service
 }

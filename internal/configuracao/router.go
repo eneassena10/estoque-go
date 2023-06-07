@@ -3,7 +3,6 @@ package configuracao
 import (
 	productControllers "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
 	userControllers "github.com/eneassena10/estoque-go/internal/domain/user/controllers"
-	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,19 +12,22 @@ const (
 
 	// ProductsID - usado em rotas que usa o id do produto para uma alteração e leitura
 	ProductsList = "/products/list"
+
+	UserLogin  = "user/login"
+	UserLogout = "user/logout"
+	UserCreate = "user/create"
 )
 
 type App struct {
-	fileStore store.IStore
-	products  productControllers.IControllers
-	user      userControllers.IUserController
+	products productControllers.IProductControllers
+	user     userControllers.IUserController
 }
 type IApp interface {
 	InitApp(router *gin.Engine)
 }
 
-func NewApp(fs store.IStore, products productControllers.IControllers, user userControllers.IUserController) IApp {
-	return &App{fileStore: fs, products: products, user: user}
+func NewApp(products productControllers.IProductControllers, user userControllers.IUserController) IApp {
+	return &App{products: products, user: user}
 }
 
 func (a *App) InitApp(router *gin.Engine) {
@@ -35,7 +37,7 @@ func (a *App) InitApp(router *gin.Engine) {
 	router.POST(Products, a.products.CreateProducts)
 	router.PATCH(Products, a.products.UpdateProductsCount)
 
-	router.POST("user/login", a.user.Logar)
-	router.POST("user/logout", a.user.Logout)
-	router.POST("user/create", a.user.Create)
+	router.POST(UserLogin, a.user.Logar)
+	router.POST(UserLogout, a.user.Logout)
+	router.POST(UserCreate, a.user.Create)
 }

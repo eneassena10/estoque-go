@@ -8,12 +8,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	productController "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
 	userController "github.com/eneassena10/estoque-go/internal/domain/user/controllers"
 	service_user "github.com/eneassena10/estoque-go/internal/domain/user/service"
 
 	config "github.com/eneassena10/estoque-go/internal/configuracao"
-	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -32,12 +30,9 @@ type Response struct {
 func CreateServer(method, url, body string) *httptest.ResponseRecorder {
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
-	productNamePath := "../../data/products.json"
-	fileStore := store.NewFileStore(productNamePath)
-	handlers := productController.NewControllers(fileStore, &sql.DB{})
-	service := service_user.NewServiceUser(fileStore)
+	service := service_user.NewServiceUser(&sql.DB{})
 	userController := userController.NewUserController(service)
-	app := config.NewApp(fileStore, handlers, userController)
+	app := config.NewApp(nil, userController)
 	app.InitApp(router)
 	req, rr := CreateRequestTest(method, url, body)
 	router.ServeHTTP(rr, req)

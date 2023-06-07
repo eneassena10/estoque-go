@@ -1,4 +1,4 @@
-package repository
+package sqlite3
 
 import (
 	"database/sql"
@@ -27,7 +27,7 @@ func (r *ProductRepository) CreateProducts(ctx *gin.Context, product *entities.P
 	return nil
 }
 
-func (r *ProductRepository) UpdateProductsCount(ctx *gin.Context, product *entities.ProductRequest) error {
+func (r *ProductRepository) UpdateProductsCount(ctx *gin.Context, oldProduct, product *entities.ProductRequest) error {
 	return nil
 }
 

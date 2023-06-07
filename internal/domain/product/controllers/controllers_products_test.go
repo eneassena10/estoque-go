@@ -13,7 +13,6 @@ import (
 	service_user "github.com/eneassena10/estoque-go/internal/domain/user/service"
 
 	config "github.com/eneassena10/estoque-go/internal/configuracao"
-	"github.com/eneassena10/estoque-go/pkg/store"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -32,12 +31,11 @@ type Response struct {
 func CreateServer(method, url, body string) *httptest.ResponseRecorder {
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
-	productNamePath := "../products.json"
-	fileStore := store.NewFileStore(productNamePath)
-	handlers := productController.NewControllers(fileStore, &sql.DB{})
-	service := service_user.NewServiceUser(fileStore)
+	db := &sql.DB{}
+	handlers := productController.NewControllers(db)
+	service := service_user.NewServiceUser(db)
 	userController := userController.NewUserController(service)
-	app := config.NewApp(fileStore, handlers, userController)
+	app := config.NewApp(handlers, userController)
 	app.InitApp(router)
 	req, rr := CreateRequestTest(method, url, body)
 	router.ServeHTTP(rr, req)
