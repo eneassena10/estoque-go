@@ -4,7 +4,8 @@
 *.dll
 *.so
 *.dylib
-./internal/products.json
+/cmd/loja.db
+
 
 # Test binary, built with `go test -c`
 *.test

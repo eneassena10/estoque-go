@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
-	"github.com/eneassena10/estoque-go/internal/domain/product/repository/sqlite3"
+	sqlite3_repository "github.com/eneassena10/estoque-go/internal/domain/product/repository/sqlite3"
 	"github.com/eneassena10/estoque-go/internal/domain/product/service"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +27,7 @@ type ProductControllers struct {
 }
 
 func NewControllers(database *sql.DB) IProductControllers {
-	r := sqlite3.NewProductRepository(database)
+	r := sqlite3_repository.NewProductRepository(database)
 	s := service.NewProductService(r)
 	return &ProductControllers{
 		Service: s,
@@ -41,12 +41,13 @@ func (c *ProductControllers) GetProductsAll(ctx *gin.Context) {
 }
 
 func (c *ProductControllers) GetProductsByID(ctx *gin.Context) {
-	var requestBody, product *entities.ProductRequest
+	requestBody := &entities.ProductRequest{}
+
 	if err := ctx.BindJSON(&requestBody); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
-	product = c.Service.GetProductsOne(ctx, requestBody)
+	product := c.Service.GetProductsOne(ctx, requestBody)
 	if product == nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, nil})
 		return

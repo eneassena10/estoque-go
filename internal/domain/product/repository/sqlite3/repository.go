@@ -1,4 +1,4 @@
-package sqlite3
+package sqlite3_repository
 
 import (
 	"database/sql"
@@ -16,7 +16,23 @@ func NewProductRepository(database *sql.DB) entities.IProductRepository {
 }
 
 func (r *ProductRepository) GetProductsAll(ctx *gin.Context) *[]entities.ProductRequest {
-	return &[]entities.ProductRequest{}
+	result, err := r.dataBase.QueryContext(ctx, "select id_product, name,price,quantidade from products;")
+	if err != nil {
+		return &[]entities.ProductRequest{}
+	}
+
+	products := &[]entities.ProductRequest{}
+	for result.Next() {
+		var product entities.ProductRequest
+		if err := result.Scan(
+			&product.ID, &product.Name, &product.Price, &product.Quantidade,
+		); err != nil {
+			return &[]entities.ProductRequest{}
+		}
+
+		*products = append(*products, product)
+	}
+	return products
 }
 
 func (r *ProductRepository) GetProductsOne(ctx *gin.Context, product *entities.ProductRequest) *entities.ProductRequest {
