@@ -11,9 +11,9 @@ type Product struct {
 
 type ProductRequest struct {
 	ID         int     `json:"id,omitempty"`
-	Name       string  `json:"name" binding:"requered"`
-	Price      float64 `json:"price" binding:"requered"`
-	Quantidade int     `json:"quantidade" binding:"requered"`
+	Name       string  `json:"name" binding:"required"`
+	Price      float64 `json:"price" binding:"required"`
+	Quantidade int     `json:"quantidade" binding:"required"`
 }
 
 var ProductPathName = "./products.json"

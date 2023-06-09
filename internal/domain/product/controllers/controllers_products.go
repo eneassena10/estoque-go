@@ -41,13 +41,13 @@ func (c *ProductControllers) GetProductsAll(ctx *gin.Context) {
 }
 
 func (c *ProductControllers) GetProductsByID(ctx *gin.Context) {
-	requestBody := &entities.ProductRequest{}
-
+	var requestBody ProductRequestBody
 	if err := ctx.BindJSON(&requestBody); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
-	product := c.Service.GetProductsOne(ctx, requestBody)
+	productSearch := &entities.ProductRequest{ID: requestBody.ID}
+	product := c.Service.GetProductsOne(ctx, productSearch)
 	if product == nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, nil})
 		return
@@ -57,14 +57,14 @@ func (c *ProductControllers) GetProductsByID(ctx *gin.Context) {
 }
 
 func (c *ProductControllers) CreateProducts(ctx *gin.Context) {
-	var requestBody *entities.ProductRequest
-	err := ctx.ShouldBindJSON(&requestBody)
+	var requestBody entities.ProductRequest
+	err := ctx.BindJSON(&requestBody)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
+		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
 
-	if err = c.Service.CreateProducts(ctx, requestBody); err != nil {
+	if err = c.Service.CreateProducts(ctx, &requestBody); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
