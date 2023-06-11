@@ -5,7 +5,6 @@ import (
 	productController "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
 	sqlite3_repository "github.com/eneassena10/estoque-go/internal/domain/product/repository/sqlite3"
 	userController "github.com/eneassena10/estoque-go/internal/domain/user/controllers"
-	service_user "github.com/eneassena10/estoque-go/internal/domain/user/service"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -16,10 +15,9 @@ func main() {
 
 	database := sqlite3_repository.DBConnect()
 
-	service := service_user.NewServiceUser(database)
 	app := configuracao.NewApp(
 		productController.NewControllers(database),
-		userController.NewUserController(service),
+		userController.NewUserController(database),
 	)
 	app.InitApp(route)
 
