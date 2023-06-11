@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	userController "github.com/eneassena10/estoque-go/internal/domain/user/controllers"
-	service_user "github.com/eneassena10/estoque-go/internal/domain/user/service"
 
 	config "github.com/eneassena10/estoque-go/internal/configuracao"
 	"github.com/gin-gonic/gin"
@@ -30,8 +29,7 @@ type Response struct {
 func CreateServer(method, url, body string) *httptest.ResponseRecorder {
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
-	service := service_user.NewServiceUser(&sql.DB{})
-	userController := userController.NewUserController(service)
+	userController := userController.NewUserController(&sql.DB{})
 	app := config.NewApp(nil, userController)
 	app.InitApp(router)
 	req, rr := CreateRequestTest(method, url, body)

@@ -1,28 +1,65 @@
 package service_user
 
 import (
-	"database/sql"
-	"errors"
+	"net/http"
 
-	"github.com/eneassena10/estoque-go/internal/domain/user/domain"
+	"github.com/eneassena10/estoque-go/internal/domain/user/entities"
+	"github.com/eneassena10/estoque-go/pkg/web"
 
 	"github.com/gin-gonic/gin"
 )
 
 type ServiceUser struct {
-	DataBase *sql.DB
+	Repository entities.IRepositoryUser
 }
 
-func NewServiceUser(db *sql.DB) domain.IServiceUser {
-	service := ServiceUser{DataBase: db}
+func NewServiceUser(repository entities.IRepositoryUser) entities.IServiceUser {
+	service := ServiceUser{Repository: repository}
 	return &service
 }
 
-func (s *ServiceUser) CheckLogin(ctx *gin.Context, user domain.LoginRequest) error {
-	for i := range domain.UsersRegistred {
-		if domain.UsersRegistred[i].Nickname == user.Nickname && domain.UsersRegistred[i].Password == user.Password {
-			return nil
-		}
+func (s *ServiceUser) Logar(ctx *gin.Context, user entities.LoginRequest) {
+	u := entities.User{
+		Name:     user.Name,
+		Nickname: user.Nickname,
+		Password: user.Password,
+		Logado:   0,
 	}
-	return errors.New("credenciais invalida")
+	logado, err := s.Repository.Logar(u)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError,
+			web.DecodeError(http.StatusInternalServerError, err.Error()))
+		return
+	}
+	ctx.JSON(http.StatusOK, web.NewResponse(http.StatusOK, logado))
+}
+
+func (s *ServiceUser) Logout(ctx *gin.Context, user entities.LoginRequest) {
+	err := s.Repository.Logout(entities.User{
+		Name:     user.Name,
+		Nickname: user.Name,
+		Password: user.Password,
+		Logado:   1,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError,
+			web.DecodeError(http.StatusInternalServerError, err.Error()))
+		return
+	}
+	ctx.JSON(http.StatusOK, web.NewResponse(http.StatusOK, "OK"))
+}
+
+func (s *ServiceUser) Create(ctx *gin.Context, user entities.LoginRequest) {
+	userCreate := entities.NewUser().
+		WithName(user.Name).
+		WithNickname(user.Nickname).
+		WithPassword(user.Password)
+
+	us, err := s.Repository.Create(*userCreate)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError,
+			web.DecodeError(http.StatusInternalServerError, err.Error()))
+		return
+	}
+	ctx.JSON(http.StatusOK, web.NewResponse(http.StatusOK, us))
 }

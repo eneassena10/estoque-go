@@ -1,54 +1,51 @@
 package controllers
 
 import (
-	"github.com/eneassena10/estoque-go/internal/domain/user/domain"
-	"net/http"
+	"database/sql"
+
+	"github.com/eneassena10/estoque-go/internal/domain/user/entities"
+	repository_user "github.com/eneassena10/estoque-go/internal/domain/user/repository"
+	service_user "github.com/eneassena10/estoque-go/internal/domain/user/service"
+	"github.com/eneassena10/estoque-go/pkg/regras"
 
 	"github.com/gin-gonic/gin"
 )
 
-type (
-	UserController struct {
-		Service domain.IServiceUser
-	}
-	IUserController interface {
-		Logar(ctx *gin.Context)
-		Logout(ctx *gin.Context)
-		Create(ctx *gin.Context)
-	}
-)
+type UserController struct {
+	Service entities.IServiceUser
+}
 
-func NewUserController(service domain.IServiceUser) IUserController {
+func NewUserController(database *sql.DB) entities.IUserController {
+	repositoryUser := repository_user.NewRepository(database)
+	serviceUser := service_user.NewServiceUser(repositoryUser)
 	return &UserController{
-		Service: service,
+		Service: serviceUser,
 	}
 }
 
 func (uc *UserController) Logar(ctx *gin.Context) {
-	var u domain.LoginRequest
-	if err := ctx.BindJSON(&u); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, Response{Data: u, Error: err.Error()})
+	var data entities.LoginRequest
+	if regras.ValidateErrorInRequest(ctx, &data) {
 		return
 	}
 
-	if err := uc.Service.CheckLogin(ctx, u); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, Response{Data: u, Error: err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, gin.H{"messager": "login realizado"})
+	uc.Service.Logar(ctx, data)
 }
 
 func (uc *UserController) Logout(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"message": "logout realizado"})
+	var data entities.LoginRequest
+	if regras.ValidateErrorInRequest(ctx, &data) {
+		return
+	}
+
+	uc.Service.Logout(ctx, data)
 }
 
 func (uc *UserController) Create(ctx *gin.Context) {
-	var u domain.User
-	if err := ctx.BindJSON(&u); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, Response{Data: u, Error: err.Error()})
+	var data entities.LoginRequest
+	if regras.ValidateErrorInRequest(ctx, &data) {
 		return
 	}
-	u.ID = 1
-	ctx.JSON(http.StatusCreated, u)
+
+	uc.Service.Create(ctx, data)
 }

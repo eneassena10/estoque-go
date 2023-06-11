@@ -19,11 +19,6 @@ type RequestError struct {
 	Message string `json:"message"`
 }
 
-type ResponseError struct {
-	Code int         `json:"code"`
-	Data interface{} `json:"data"`
-}
-
 func msgForTag(tag string) string {
 	switch tag {
 	case "required":
@@ -38,8 +33,8 @@ func msgForTag(tag string) string {
 
 func ValidateErrorInRequest(context *gin.Context, data interface{}) bool {
 	var out []RequestError
-	err := context.BindJSON(&data)
-	if err != nil {
+
+	if err := context.BindJSON(&data); err != nil {
 		var validatorError validator.ValidationErrors
 		var jsonError *json.UnmarshalTypeError
 		var jsonFieldError *json.UnmarshalFieldError
@@ -50,7 +45,7 @@ func ValidateErrorInRequest(context *gin.Context, data interface{}) bool {
 			req := RequestError{jsonError.Field, strin}
 			context.JSON(http.StatusBadRequest,
 				web.NewResponse(http.StatusBadRequest, req))
-
+			return true
 		case errors.As(err, &validatorError):
 			out = make([]RequestError, len(validatorError))
 
@@ -62,12 +57,13 @@ func ValidateErrorInRequest(context *gin.Context, data interface{}) bool {
 			}
 			context.JSON(http.StatusUnprocessableEntity,
 				web.NewResponse(http.StatusUnprocessableEntity, out))
-
+			return true
 		case errors.As(err, &jsonFieldError):
 			strin := strings.Split(jsonError.Error(), ":")[1]
 			req := RequestError{jsonError.Field, strin}
 			context.JSON(http.StatusBadRequest,
 				web.NewResponse(http.StatusBadRequest, req))
+			return true
 		default:
 			context.JSON(http.StatusUnprocessableEntity,
 				web.DecodeError(http.StatusUnprocessableEntity, err.Error()))

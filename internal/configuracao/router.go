@@ -2,7 +2,7 @@ package configuracao
 
 import (
 	productControllers "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
-	userControllers "github.com/eneassena10/estoque-go/internal/domain/user/controllers"
+	"github.com/eneassena10/estoque-go/internal/domain/user/entities"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,13 +20,16 @@ const (
 
 type App struct {
 	products productControllers.IProductControllers
-	user     userControllers.IUserController
+	user     entities.IUserController
 }
 type IApp interface {
 	InitApp(router *gin.Engine)
 }
+type IGetAllProduct interface {
+	GetProductsAll(ctx *gin.Context)
+}
 
-func NewApp(products productControllers.IProductControllers, user userControllers.IUserController) IApp {
+func NewApp(products productControllers.IProductControllers, user entities.IUserController) IApp {
 	return &App{products: products, user: user}
 }
 

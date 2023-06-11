@@ -1,19 +1,20 @@
-package sqlite3_repository
+package dbsqlite3
 
 import (
 	"database/sql"
+	"log"
 )
 
-const PATH_DB = "./loja.db"
+const PATH_DB = "./data/service.db"
 
 func DBConnect() *sql.DB {
 	db, err := sql.Open("sqlite3", PATH_DB)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	if err := db.Ping(); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	return db
 }
