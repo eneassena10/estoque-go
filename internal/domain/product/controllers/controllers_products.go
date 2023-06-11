@@ -7,6 +7,7 @@ import (
 	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
 	sqlite3_repository "github.com/eneassena10/estoque-go/internal/domain/product/repository/sqlite3"
 	"github.com/eneassena10/estoque-go/internal/domain/product/service"
+	"github.com/eneassena10/estoque-go/pkg/regras"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,11 +43,11 @@ func (c *ProductControllers) GetProductsAll(ctx *gin.Context) {
 
 func (c *ProductControllers) GetProductsByID(ctx *gin.Context) {
 	var requestBody ProductRequestBody
-	if err := ctx.BindJSON(&requestBody); err != nil {
-		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
+
+	if regras.ValidateErrorInRequest(ctx, &requestBody) {
 		return
 	}
-	productSearch := &entities.ProductRequest{ID: requestBody.ID}
+	productSearch := entities.NewProduct().WithID(requestBody.ID)
 	product := c.Service.GetProductsOne(ctx, productSearch)
 	if product == nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, nil})
@@ -58,13 +59,15 @@ func (c *ProductControllers) GetProductsByID(ctx *gin.Context) {
 
 func (c *ProductControllers) CreateProducts(ctx *gin.Context) {
 	var requestBody entities.ProductRequest
-	err := ctx.BindJSON(&requestBody)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
+	if regras.ValidateErrorInRequest(ctx, &requestBody) {
 		return
 	}
+	productCreated := entities.NewProduct().
+		WithName(requestBody.Name).
+		WithPrice(requestBody.Price).
+		WithQuantidade(requestBody.Quantidade)
 
-	if err = c.Service.CreateProducts(ctx, &requestBody); err != nil {
+	if err := c.Service.CreateProducts(ctx, productCreated); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
@@ -72,31 +75,32 @@ func (c *ProductControllers) CreateProducts(ctx *gin.Context) {
 }
 
 func (c *ProductControllers) UpdateProductsCount(ctx *gin.Context) {
-	var requestBody *entities.ProductRequest
-	if err := ctx.BindJSON(&requestBody); err != nil {
-		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
+	var requestBody *ProductRequestBody
+	if regras.ValidateErrorInRequest(ctx, &requestBody) {
 		return
 	}
 
-	if err := c.Service.UpdateProductsCount(ctx, requestBody); err != nil {
+	productUpdateCount := entities.NewProduct().
+		WithID(requestBody.ID).
+		WithQuantidade(requestBody.Quantidade)
+
+	if err := c.Service.UpdateProductsCount(ctx, productUpdateCount); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
-
-	ctx.JSON(http.StatusOK, Response{http.StatusOK, requestBody})
+	productResponse := c.Service.GetProductsOne(ctx, productUpdateCount)
+	ctx.JSON(http.StatusOK, Response{http.StatusOK, productResponse})
 }
 
 func (c *ProductControllers) DeleteProducts(ctx *gin.Context) {
-	var product *entities.ProductRequest
-
-	if err := ctx.BindJSON(&product); err != nil {
+	var requestBody *ProductRequestBody
+	if regras.ValidateErrorInRequest(ctx, &requestBody) {
+		return
+	}
+	productDeleted := entities.NewProduct().WithID(requestBody.ID)
+	if err := c.Service.DeleteProducts(ctx, productDeleted); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
-	if err := c.Service.DeleteProducts(ctx, product); err != nil {
-		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
-		return
-	}
-
 	ctx.JSON(http.StatusNoContent, nil)
 }

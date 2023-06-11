@@ -31,8 +31,8 @@ func NewApp(products productControllers.IProductControllers, user userController
 }
 
 func (a *App) InitApp(router *gin.Engine) {
-	router.GET(Products, a.products.GetProductsByID)
 	router.GET(ProductsList, a.products.GetProductsAll)
+	router.GET(Products, a.products.GetProductsByID)
 	router.DELETE(Products, a.products.DeleteProducts)
 	router.POST(Products, a.products.CreateProducts)
 	router.PATCH(Products, a.products.UpdateProductsCount)

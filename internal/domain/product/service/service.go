@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"log"
 
 	"github.com/gin-gonic/gin"
 
@@ -36,7 +35,6 @@ func (s *ProductService) CreateProducts(ctx *gin.Context, product *entities.Prod
 
 func (s *ProductService) UpdateProductsCount(ctx *gin.Context, product *entities.ProductRequest) error {
 	productSearch := s.GetProductsOne(ctx, product)
-	log.Println(productSearch)
 	if productSearch == nil {
 		return errors.New("not found product")
 	}

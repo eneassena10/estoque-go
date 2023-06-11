@@ -12,7 +12,7 @@ import (
 
 func main() {
 	// create instance
-	route := gin.Default()
+	route := gin.New()
 
 	database := sqlite3_repository.DBConnect()
 
