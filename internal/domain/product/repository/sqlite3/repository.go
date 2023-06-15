@@ -7,6 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//go:generate mockgen -source=./repository.go -destination=./../../../test/mockgen/product_repository_mock.go -package=mockgen
+type IProductRepository interface {
+	GetProductsAll(ctx *gin.Context) *[]entities.ProductRequest
+	GetProductsOne(ctx *gin.Context, product *entities.ProductRequest) *entities.ProductRequest
+	CreateProducts(ctx *gin.Context, product *entities.ProductRequest) error
+	UpdateProductsCount(ctx *gin.Context, oldProduct *entities.ProductRequest, product *entities.ProductRequest) error
+	DeleteProducts(ctx *gin.Context, product *entities.ProductRequest) error
+}
+
 type ProductRepository struct {
 	dataBase *sql.DB
 }
@@ -19,7 +28,7 @@ const (
 	QUERY_CREATE_PRODUCT       = "INSERT INTO products (name, price, quantidade) VALUES(?, ?, ?);"
 )
 
-func NewProductRepository(database *sql.DB) entities.IProductRepository {
+func NewProductRepository(database *sql.DB) IProductRepository {
 	return &ProductRepository{dataBase: database}
 }
 

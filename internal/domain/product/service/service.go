@@ -6,13 +6,22 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
+	sqlite3_repository "github.com/eneassena10/estoque-go/internal/domain/product/repository/sqlite3"
 )
 
+//go:generate mockgen -source=./service.go -destination=./../../test/mockgen/product_service_mock.go -package=mockgen
+type IPoductService interface {
+	GetProductsAll(ctx *gin.Context) *[]entities.ProductRequest
+	GetProductsOne(ctx *gin.Context, product *entities.ProductRequest) *entities.ProductRequest
+	CreateProducts(ctx *gin.Context, product *entities.ProductRequest) error
+	UpdateProductsCount(ctx *gin.Context, oldProduct *entities.ProductRequest) error
+	DeleteProducts(ctx *gin.Context, product *entities.ProductRequest) error
+}
 type ProductService struct {
-	Repository entities.IProductRepository
+	Repository sqlite3_repository.IProductRepository
 }
 
-func NewProductService(repository entities.IProductRepository) entities.IPoductService {
+func NewProductService(repository sqlite3_repository.IProductRepository) IPoductService {
 	return &ProductService{Repository: repository}
 }
 

@@ -10,7 +10,6 @@ import (
 
 	productController "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
 	userController "github.com/eneassena10/estoque-go/internal/domain/user/controllers"
-	service_user "github.com/eneassena10/estoque-go/internal/domain/user/service"
 
 	config "github.com/eneassena10/estoque-go/internal/configuracao"
 	"github.com/gin-gonic/gin"
@@ -32,10 +31,9 @@ func CreateServer(method, url, body string) *httptest.ResponseRecorder {
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
 	db := &sql.DB{}
-	handlers := productController.NewControllers(db)
-	service := service_user.NewServiceUser(db)
-	userController := userController.NewUserController(service)
-	app := config.NewApp(handlers, userController)
+	productController := productController.NewControllers(db)
+	userController := userController.NewUserController(db)
+	app := config.NewApp(productController, userController)
 	app.InitApp(router)
 	req, rr := CreateRequestTest(method, url, body)
 	router.ServeHTTP(rr, req)

@@ -24,7 +24,7 @@ type IProductControllers interface {
 Controllers de Products
 */
 type ProductControllers struct {
-	Service entities.IPoductService
+	Service service.IPoductService
 }
 
 func NewControllers(database *sql.DB) IProductControllers {

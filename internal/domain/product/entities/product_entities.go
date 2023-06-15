@@ -1,7 +1,5 @@
 package entities
 
-import "github.com/gin-gonic/gin"
-
 type Product struct {
 	ID         int
 	Name       string
@@ -14,22 +12,6 @@ type ProductRequest struct {
 	Name       string  `json:"name" binding:"required"`
 	Price      float64 `json:"price" binding:"required"`
 	Quantidade int     `json:"quantidade" binding:"required"`
-}
-
-type IProductRepository interface {
-	GetProductsAll(ctx *gin.Context) *[]ProductRequest
-	GetProductsOne(ctx *gin.Context, product *ProductRequest) *ProductRequest
-	CreateProducts(ctx *gin.Context, product *ProductRequest) error
-	UpdateProductsCount(ctx *gin.Context, oldProduct *ProductRequest, product *ProductRequest) error
-	DeleteProducts(ctx *gin.Context, product *ProductRequest) error
-}
-
-type IPoductService interface {
-	GetProductsAll(ctx *gin.Context) *[]ProductRequest
-	GetProductsOne(ctx *gin.Context, product *ProductRequest) *ProductRequest
-	CreateProducts(ctx *gin.Context, product *ProductRequest) error
-	UpdateProductsCount(ctx *gin.Context, oldProduct *ProductRequest) error
-	DeleteProducts(ctx *gin.Context, product *ProductRequest) error
 }
 
 func NewProduct() *ProductRequest {
