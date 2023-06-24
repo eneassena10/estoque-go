@@ -36,8 +36,9 @@ func (s *ProductService) GetProductsOne(ctx *gin.Context, product *entities.Prod
 }
 
 func (s *ProductService) CreateProducts(ctx *gin.Context, product *entities.ProductRequest) error {
-	if newProduct := s.Repository.CreateProducts(ctx, product); newProduct == nil {
-		return newProduct
+	erroCreate := s.Repository.CreateProducts(ctx, product)
+	if erroCreate == nil {
+		return erroCreate
 	}
 	return errors.New("não possível criar um novo produto! 'Tente Novamente'")
 }

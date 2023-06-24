@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//go:generate mockgen -source=./controllers_products.go -destination=./../../test/mockgen/controllers_products_mock.go -package=mockgen
 type IProductControllers interface {
 	GetProductsAll(ctx *gin.Context)
 	GetProductsByID(ctx *gin.Context)
