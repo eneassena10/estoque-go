@@ -13,6 +13,8 @@ func main() {
 	// create instance
 	route := gin.New()
 
+	route.Use(gin.Logger())
+
 	database := sqlite3_repository.DBConnect()
 
 	app := configuracao.NewApp(
