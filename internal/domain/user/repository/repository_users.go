@@ -18,13 +18,13 @@ func NewRepository(database *sql.DB) entities.IRepositoryUser {
 }
 
 func (r *Repository) Logar(user entities.User) (bool, error) {
-	query := "SELECT (nickname, password) FROM users WHERE nickname=?"
+	query := "SELECT nickname, password FROM users WHERE nickname=?"
 	stmt := r.Database.QueryRow(query, &user.Nickname)
 
 	var userResult entities.User
 	err := stmt.Scan(&userResult.Nickname, &userResult.Password)
 	if err != nil {
-		return false, err
+		return false, errors.New("credenciais ivalida")
 	}
 
 	if userResult.Nickname == user.Nickname && userResult.Password == user.Password {
@@ -37,16 +37,16 @@ func (r *Repository) Create(user entities.User) (entities.LoginRequest, error) {
 	query := "INSERT INTO users (name, nickname, password,logado) VALUES(?, ?, ?, ?)"
 	stmt, err := r.Database.Prepare(query)
 	if err != nil {
-		return entities.LoginRequest{}, err
+		return entities.LoginRequest{}, errors.New("dados incosistente")
 	}
 	defer stmt.Close()
 
 	result, err := stmt.Exec(&user.Name, &user.Nickname, &user.Password, &user.Logado)
 	if err != nil {
-		return entities.LoginRequest{}, err
+		return entities.LoginRequest{}, errors.New("dados incosistente")
 	}
 	if rowsAffected, err := result.RowsAffected(); rowsAffected == 0 && err != nil {
-		return entities.LoginRequest{}, err
+		return entities.LoginRequest{}, errors.New("dados incosistente")
 	}
 
 	return entities.LoginRequest{

@@ -19,13 +19,13 @@ func NewServiceUser(repository entities.IRepositoryUser) entities.IServiceUser {
 }
 
 func (s *ServiceUser) Logar(ctx *gin.Context, user entities.LoginRequest) {
-	u := entities.User{
-		Name:     user.Name,
-		Nickname: user.Nickname,
-		Password: user.Password,
-		Logado:   0,
-	}
-	logado, err := s.Repository.Logar(u)
+	u := entities.NewUser().
+		WithName(user.Name).
+		WithNickname(user.Nickname).
+		WithPassword(user.Password).
+		WithLogado(0)
+
+	logado, err := s.Repository.Logar(*u)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
 			web.DecodeError(http.StatusInternalServerError, err.Error()))
@@ -53,7 +53,8 @@ func (s *ServiceUser) Create(ctx *gin.Context, user entities.LoginRequest) {
 	userCreate := entities.NewUser().
 		WithName(user.Name).
 		WithNickname(user.Nickname).
-		WithPassword(user.Password)
+		WithPassword(user.Password).
+		WithLogado(0)
 
 	us, err := s.Repository.Create(*userCreate)
 	if err != nil {

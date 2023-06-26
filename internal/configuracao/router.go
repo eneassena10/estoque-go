@@ -13,9 +13,9 @@ const (
 	// ProductsID - usado em rotas que usa o id do produto para uma alteração e leitura
 	ProductsList = "/products/list"
 
-	UserLogin  = "user/login"
-	UserLogout = "user/logout"
-	UserCreate = "user/create"
+	UserLogin  = "/user/login"
+	UserLogout = "/user/logout"
+	UserCreate = "/user/create"
 )
 
 type App struct {

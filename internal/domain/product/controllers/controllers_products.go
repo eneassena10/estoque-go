@@ -51,7 +51,7 @@ func (c *ProductControllers) GetProductsByID(ctx *gin.Context) {
 	productSearch := entities.NewProduct().WithID(requestBody.ID)
 	product := c.Service.GetProductsOne(productSearch)
 	if product == nil {
-		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, nil})
+		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, requestBody})
 		return
 	}
 
