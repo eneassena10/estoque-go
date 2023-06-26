@@ -8,7 +8,6 @@ import (
 	reflect "reflect"
 
 	entities "github.com/eneassena10/estoque-go/internal/domain/product/entities"
-	gin "github.com/gin-gonic/gin"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -36,71 +35,71 @@ func (m *MockIProductRepository) EXPECT() *MockIProductRepositoryMockRecorder {
 }
 
 // CreateProducts mocks base method.
-func (m *MockIProductRepository) CreateProducts(ctx *gin.Context, product *entities.ProductRequest) error {
+func (m *MockIProductRepository) CreateProducts(product *entities.ProductRequest) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateProducts", ctx, product)
+	ret := m.ctrl.Call(m, "CreateProducts", product)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // CreateProducts indicates an expected call of CreateProducts.
-func (mr *MockIProductRepositoryMockRecorder) CreateProducts(ctx, product interface{}) *gomock.Call {
+func (mr *MockIProductRepositoryMockRecorder) CreateProducts(product interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateProducts", reflect.TypeOf((*MockIProductRepository)(nil).CreateProducts), ctx, product)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateProducts", reflect.TypeOf((*MockIProductRepository)(nil).CreateProducts), product)
 }
 
 // DeleteProducts mocks base method.
-func (m *MockIProductRepository) DeleteProducts(ctx *gin.Context, product *entities.ProductRequest) error {
+func (m *MockIProductRepository) DeleteProducts(product *entities.ProductRequest) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteProducts", ctx, product)
+	ret := m.ctrl.Call(m, "DeleteProducts", product)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // DeleteProducts indicates an expected call of DeleteProducts.
-func (mr *MockIProductRepositoryMockRecorder) DeleteProducts(ctx, product interface{}) *gomock.Call {
+func (mr *MockIProductRepositoryMockRecorder) DeleteProducts(product interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteProducts", reflect.TypeOf((*MockIProductRepository)(nil).DeleteProducts), ctx, product)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteProducts", reflect.TypeOf((*MockIProductRepository)(nil).DeleteProducts), product)
 }
 
 // GetProductsAll mocks base method.
-func (m *MockIProductRepository) GetProductsAll(ctx *gin.Context) *[]entities.ProductRequest {
+func (m *MockIProductRepository) GetProductsAll() *[]entities.ProductRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetProductsAll", ctx)
+	ret := m.ctrl.Call(m, "GetProductsAll")
 	ret0, _ := ret[0].(*[]entities.ProductRequest)
 	return ret0
 }
 
 // GetProductsAll indicates an expected call of GetProductsAll.
-func (mr *MockIProductRepositoryMockRecorder) GetProductsAll(ctx interface{}) *gomock.Call {
+func (mr *MockIProductRepositoryMockRecorder) GetProductsAll() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProductsAll", reflect.TypeOf((*MockIProductRepository)(nil).GetProductsAll), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProductsAll", reflect.TypeOf((*MockIProductRepository)(nil).GetProductsAll))
 }
 
 // GetProductsOne mocks base method.
-func (m *MockIProductRepository) GetProductsOne(ctx *gin.Context, product *entities.ProductRequest) *entities.ProductRequest {
+func (m *MockIProductRepository) GetProductsOne(product *entities.ProductRequest) *entities.ProductRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetProductsOne", ctx, product)
+	ret := m.ctrl.Call(m, "GetProductsOne", product)
 	ret0, _ := ret[0].(*entities.ProductRequest)
 	return ret0
 }
 
 // GetProductsOne indicates an expected call of GetProductsOne.
-func (mr *MockIProductRepositoryMockRecorder) GetProductsOne(ctx, product interface{}) *gomock.Call {
+func (mr *MockIProductRepositoryMockRecorder) GetProductsOne(product interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProductsOne", reflect.TypeOf((*MockIProductRepository)(nil).GetProductsOne), ctx, product)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProductsOne", reflect.TypeOf((*MockIProductRepository)(nil).GetProductsOne), product)
 }
 
 // UpdateProductsCount mocks base method.
-func (m *MockIProductRepository) UpdateProductsCount(ctx *gin.Context, oldProduct, product *entities.ProductRequest) error {
+func (m *MockIProductRepository) UpdateProductsCount(oldProduct, product *entities.ProductRequest) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateProductsCount", ctx, oldProduct, product)
+	ret := m.ctrl.Call(m, "UpdateProductsCount", oldProduct, product)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateProductsCount indicates an expected call of UpdateProductsCount.
-func (mr *MockIProductRepositoryMockRecorder) UpdateProductsCount(ctx, oldProduct, product interface{}) *gomock.Call {
+func (mr *MockIProductRepositoryMockRecorder) UpdateProductsCount(oldProduct, product interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProductsCount", reflect.TypeOf((*MockIProductRepository)(nil).UpdateProductsCount), ctx, oldProduct, product)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProductsCount", reflect.TypeOf((*MockIProductRepository)(nil).UpdateProductsCount), oldProduct, product)
 }

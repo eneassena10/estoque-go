@@ -6,7 +6,6 @@ import (
 
 	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
 	"github.com/eneassena10/estoque-go/internal/domain/test/mockgen"
-	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,10 +24,10 @@ func TestNewProductService(t *testing.T) {
 		productsListMocked := new([]entities.ProductRequest)
 		*productsListMocked = append(*productsListMocked, *productMocked)
 
-		productRepositoryMocked.EXPECT().GetProductsAll(gomock.Any()).Return(productsListMocked)
+		productRepositoryMocked.EXPECT().GetProductsAll().Return(productsListMocked)
 
 		serviceMocked := NewProductService(productRepositoryMocked)
-		prod := serviceMocked.GetProductsAll(nil)
+		prod := serviceMocked.GetProductsAll()
 		assert.NotNil(t, prod)
 		assert.True(t, len(*prod) == 1)
 	})
@@ -37,10 +36,10 @@ func TestNewProductService(t *testing.T) {
 		productRepositoryMocked := mockgen.NewMockIProductRepository(ctrl)
 		productSearchMocked := &entities.ProductRequest{ID: 1}
 
-		productRepositoryMocked.EXPECT().GetProductsOne(gomock.Any(), productSearchMocked).Return(productMocked)
+		productRepositoryMocked.EXPECT().GetProductsOne(productSearchMocked).Return(productMocked)
 
 		serviceMocked := NewProductService(productRepositoryMocked)
-		productResult := serviceMocked.GetProductsOne(nil, productSearchMocked)
+		productResult := serviceMocked.GetProductsOne(productSearchMocked)
 		assert.NotNil(t, productResult)
 		assert.Equal(t, productSearchMocked.ID, productMocked.ID)
 	})
@@ -53,10 +52,10 @@ func TestNewProductService(t *testing.T) {
 			Quantidade: 10,
 		}
 
-		productRepositoryMocked.EXPECT().CreateProducts(gomock.Any(), productNewMocked).Return(nil)
+		productRepositoryMocked.EXPECT().CreateProducts(productNewMocked).Return(nil)
 
 		serviceMocked := NewProductService(productRepositoryMocked)
-		erro := serviceMocked.CreateProducts(nil, productNewMocked)
+		erro := serviceMocked.CreateProducts(productNewMocked)
 		assert.Nil(t, erro)
 		assert.NoError(t, erro)
 	})
@@ -69,10 +68,10 @@ func TestNewProductService(t *testing.T) {
 			Price: 450,
 		}
 
-		productRepositoryMocked.EXPECT().CreateProducts(gomock.Any(), productNewMocked).Return(errorExpected)
+		productRepositoryMocked.EXPECT().CreateProducts(productNewMocked).Return(errorExpected)
 
 		serviceMocked := NewProductService(productRepositoryMocked)
-		erro := serviceMocked.CreateProducts(nil, productNewMocked)
+		erro := serviceMocked.CreateProducts(productNewMocked)
 		assert.Error(t, erro)
 	})
 	t.Run("UpdateProductsCount", func(t *testing.T) {
@@ -89,43 +88,41 @@ func TestNewProductService(t *testing.T) {
 			Quantidade: 5,
 		}
 
-		productRepositoryMocked.EXPECT().GetProductsOne(gomock.Any(), productNewMocked).Return(oldProductMocked)
-		productRepositoryMocked.EXPECT().UpdateProductsCount(gomock.Any(), oldProductMocked, productNewMocked).Return(nil)
+		productRepositoryMocked.EXPECT().GetProductsOne(productNewMocked).Return(oldProductMocked)
+		productRepositoryMocked.EXPECT().UpdateProductsCount(oldProductMocked, productNewMocked).Return(nil)
 
 		serviceMocked := NewProductService(productRepositoryMocked)
-		erro := serviceMocked.UpdateProductsCount(nil, productNewMocked)
+		erro := serviceMocked.UpdateProductsCount(productNewMocked)
 		assert.NoError(t, erro)
 	})
 	t.Run("UpdateProductsCount or fail", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		productRepositoryMocked := mockgen.NewMockIProductRepository(ctrl)
-		context := &gin.Context{}
 
 		productNewMocked := &entities.ProductRequest{
 			ID:         1,
 			Quantidade: 5,
 		}
 		expectError := errors.New("not found product")
-		productRepositoryMocked.EXPECT().GetProductsOne(context, productNewMocked).Return(nil)
+		productRepositoryMocked.EXPECT().GetProductsOne(productNewMocked).Return(nil)
 
 		serviceMocked := NewProductService(productRepositoryMocked)
-		erro := serviceMocked.UpdateProductsCount(context, productNewMocked)
+		erro := serviceMocked.UpdateProductsCount(productNewMocked)
 		assert.Error(t, erro)
 		assert.EqualValues(t, expectError.Error(), erro.Error())
 	})
 	t.Run("DeleteProducts", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		productRepositoryMocked := mockgen.NewMockIProductRepository(ctrl)
-		context := &gin.Context{}
 
 		productNewMocked := &entities.ProductRequest{
 			ID:         1,
 			Quantidade: 5,
 		}
-		productRepositoryMocked.EXPECT().DeleteProducts(context, productNewMocked).Return(nil)
+		productRepositoryMocked.EXPECT().DeleteProducts(productNewMocked).Return(nil)
 
 		serviceMocked := NewProductService(productRepositoryMocked)
-		erro := serviceMocked.DeleteProducts(context, productNewMocked)
+		erro := serviceMocked.DeleteProducts(productNewMocked)
 		assert.NoError(t, erro)
 	})
 }

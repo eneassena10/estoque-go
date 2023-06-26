@@ -3,6 +3,7 @@ module github.com/eneassena10/estoque-go
 go 1.20
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/golang/mock v1.6.0

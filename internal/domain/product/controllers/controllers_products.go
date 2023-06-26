@@ -37,7 +37,7 @@ func NewControllers(database *sql.DB) IProductControllers {
 }
 
 func (c *ProductControllers) GetProductsAll(ctx *gin.Context) {
-	products := c.Service.GetProductsAll(ctx)
+	products := c.Service.GetProductsAll()
 
 	ctx.JSON(http.StatusOK, Response{http.StatusOK, products})
 }
@@ -49,7 +49,7 @@ func (c *ProductControllers) GetProductsByID(ctx *gin.Context) {
 		return
 	}
 	productSearch := entities.NewProduct().WithID(requestBody.ID)
-	product := c.Service.GetProductsOne(ctx, productSearch)
+	product := c.Service.GetProductsOne(productSearch)
 	if product == nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, nil})
 		return
@@ -68,7 +68,7 @@ func (c *ProductControllers) CreateProducts(ctx *gin.Context) {
 		WithPrice(requestBody.Price).
 		WithQuantidade(requestBody.Quantidade)
 
-	if err := c.Service.CreateProducts(ctx, productCreated); err != nil {
+	if err := c.Service.CreateProducts(productCreated); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
@@ -85,11 +85,11 @@ func (c *ProductControllers) UpdateProductsCount(ctx *gin.Context) {
 		WithID(requestBody.ID).
 		WithQuantidade(requestBody.Quantidade)
 
-	if err := c.Service.UpdateProductsCount(ctx, productUpdateCount); err != nil {
+	if err := c.Service.UpdateProductsCount(productUpdateCount); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
-	productResponse := c.Service.GetProductsOne(ctx, productUpdateCount)
+	productResponse := c.Service.GetProductsOne(productUpdateCount)
 	ctx.JSON(http.StatusOK, Response{http.StatusOK, productResponse})
 }
 
@@ -99,7 +99,7 @@ func (c *ProductControllers) DeleteProducts(ctx *gin.Context) {
 		return
 	}
 	productDeleted := entities.NewProduct().WithID(requestBody.ID)
-	if err := c.Service.DeleteProducts(ctx, productDeleted); err != nil {
+	if err := c.Service.DeleteProducts(productDeleted); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
