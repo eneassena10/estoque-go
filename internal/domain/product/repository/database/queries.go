@@ -1,4 +1,4 @@
-package sqlite3_repository
+package sqlite3
 
 const (
 	QUERY_SELECT_ALL_PRODUCT   = "SELECT id_product, name, price, quantidade FROM products;"

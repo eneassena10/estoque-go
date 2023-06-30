@@ -17,8 +17,8 @@ type IUser interface {
 	IUserLogout
 }
 type IRepositoryUser interface {
-	Logar(user User) (bool, error)
-	Create(user User) (LoginRequest, error)
+	Logar(user User) error
+	Create(user User) error
 	Logout(user User) error
 }
 

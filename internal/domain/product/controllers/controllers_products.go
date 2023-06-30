@@ -1,38 +1,21 @@
 package controllers
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
-	sqlite3_repository "github.com/eneassena10/estoque-go/internal/domain/product/repository/sqlite3"
 	"github.com/eneassena10/estoque-go/internal/domain/product/service"
 	"github.com/eneassena10/estoque-go/pkg/regras"
-
 	"github.com/gin-gonic/gin"
 )
 
-//go:generate mockgen -source=./controllers_products.go -destination=./../../test/mockgen/controllers_products_mock.go -package=mockgen
-type IProductControllers interface {
-	GetProductsAll(ctx *gin.Context)
-	GetProductsByID(ctx *gin.Context)
-	CreateProducts(ctx *gin.Context)
-	UpdateProductsCount(ctx *gin.Context)
-	DeleteProducts(ctx *gin.Context)
-}
-
-/*
-Controllers de Products
-*/
 type ProductControllers struct {
-	Service service.IPoductService
+	Service *service.ProductService
 }
 
-func NewControllers(database *sql.DB) IProductControllers {
-	r := sqlite3_repository.NewProductRepository(database)
-	s := service.NewProductService(r)
+func NewControllers(database *service.ProductService) *ProductControllers {
 	return &ProductControllers{
-		Service: s,
+		Service: database,
 	}
 }
 
@@ -51,7 +34,7 @@ func (c *ProductControllers) GetProductsByID(ctx *gin.Context) {
 	productSearch := entities.NewProduct().WithID(requestBody.ID)
 	product := c.Service.GetProductsOne(productSearch)
 	if product == nil {
-		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, requestBody})
+		ctx.JSON(http.StatusBadRequest, Response{http.StatusBadRequest, requestBody})
 		return
 	}
 

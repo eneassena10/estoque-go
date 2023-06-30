@@ -4,16 +4,17 @@ import (
 	"net/http"
 
 	"github.com/eneassena10/estoque-go/internal/domain/user/entities"
+	repository_user "github.com/eneassena10/estoque-go/internal/domain/user/repository"
 	"github.com/eneassena10/estoque-go/pkg/web"
 
 	"github.com/gin-gonic/gin"
 )
 
 type ServiceUser struct {
-	Repository entities.IRepositoryUser
+	Repository repository_user.Repository
 }
 
-func NewServiceUser(repository entities.IRepositoryUser) entities.IServiceUser {
+func NewServiceUser(repository repository_user.Repository) entities.IServiceUser {
 	service := ServiceUser{Repository: repository}
 	return &service
 }
@@ -25,13 +26,13 @@ func (s *ServiceUser) Logar(ctx *gin.Context, user entities.LoginRequest) {
 		WithPassword(user.Password).
 		WithLogado(0)
 
-	logado, err := s.Repository.Logar(*u)
+	err := s.Repository.Logar(*u)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
 			web.DecodeError(http.StatusInternalServerError, err.Error()))
 		return
 	}
-	ctx.JSON(http.StatusOK, web.NewResponse(http.StatusOK, logado))
+	ctx.JSON(http.StatusOK, web.NewResponse(http.StatusNoContent, nil))
 }
 
 func (s *ServiceUser) Logout(ctx *gin.Context, user entities.LoginRequest) {
@@ -56,11 +57,11 @@ func (s *ServiceUser) Create(ctx *gin.Context, user entities.LoginRequest) {
 		WithPassword(user.Password).
 		WithLogado(0)
 
-	us, err := s.Repository.Create(*userCreate)
+	err := s.Repository.Create(*userCreate)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError,
 			web.DecodeError(http.StatusInternalServerError, err.Error()))
 		return
 	}
-	ctx.JSON(http.StatusOK, web.NewResponse(http.StatusOK, us))
+	ctx.JSON(http.StatusCreated, web.NewResponse(http.StatusCreated, nil))
 }

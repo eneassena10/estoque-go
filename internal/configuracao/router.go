@@ -2,11 +2,10 @@ package configuracao
 
 import (
 	productControllers "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
-	"github.com/eneassena10/estoque-go/internal/domain/user/entities"
 	"github.com/gin-gonic/gin"
 )
 
-const (
+var (
 	// Products - rotas de listagem e criação de um novo produto
 	Products = "/products"
 
@@ -19,18 +18,13 @@ const (
 )
 
 type App struct {
-	products productControllers.IProductControllers
-	user     entities.IUserController
-}
-type IApp interface {
-	InitApp(router *gin.Engine)
-}
-type IGetAllProduct interface {
-	GetProductsAll(ctx *gin.Context)
+	products *productControllers.ProductControllers
 }
 
-func NewApp(products productControllers.IProductControllers, user entities.IUserController) IApp {
-	return &App{products: products, user: user}
+func NewApp(products *productControllers.ProductControllers) *App {
+	app := &App{products: products}
+
+	return app
 }
 
 func (a *App) InitApp(router *gin.Engine) {
@@ -40,7 +34,7 @@ func (a *App) InitApp(router *gin.Engine) {
 	router.POST(Products, a.products.CreateProducts)
 	router.PATCH(Products, a.products.UpdateProductsCount)
 
-	router.POST(UserLogin, a.user.Logar)
-	router.POST(UserLogout, a.user.Logout)
-	router.POST(UserCreate, a.user.Create)
+	// router.POST(UserLogin, a.user.Logar)
+	// router.POST(UserLogout, a.user.Logout)
+	// router.POST(UserCreate, a.user.Create)
 }

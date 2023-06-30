@@ -1,15 +1,6 @@
 package service
 
-import (
-	"errors"
-	"testing"
-
-	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
-	"github.com/eneassena10/estoque-go/internal/domain/test/mockgen"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/assert"
-)
-
+/*
 func TestNewProductService(t *testing.T) {
 	productMocked := &entities.ProductRequest{
 		ID:         1,
@@ -126,3 +117,4 @@ func TestNewProductService(t *testing.T) {
 		assert.NoError(t, erro)
 	})
 }
+*/

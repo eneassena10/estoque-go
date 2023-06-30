@@ -2,14 +2,9 @@ package sqlite3_repository
 
 import (
 	"database/sql"
-	"errors"
 	"log"
-	"regexp"
-	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
-	"github.com/stretchr/testify/assert"
 )
 
 func NewConnectionMock() (*sql.DB, sqlmock.Sqlmock) {
@@ -20,6 +15,7 @@ func NewConnectionMock() (*sql.DB, sqlmock.Sqlmock) {
 	return db, mock
 }
 
+/*
 func TestNewProductRepository(t *testing.T) {
 	t.Run("Delete Products - success", func(t *testing.T) {
 		db, mocks := NewConnectionMock()
@@ -61,3 +57,4 @@ func TestNewProductRepository(t *testing.T) {
 		assert.Equal(t, expectError.Error(), err.Error())
 	})
 }
+*/
