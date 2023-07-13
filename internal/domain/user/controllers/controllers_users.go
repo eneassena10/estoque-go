@@ -1,10 +1,7 @@
 package controllers
 
 import (
-	"database/sql"
-
 	"github.com/eneassena10/estoque-go/internal/domain/user/entities"
-	repository_user "github.com/eneassena10/estoque-go/internal/domain/user/repository"
 	service_user "github.com/eneassena10/estoque-go/internal/domain/user/service"
 	"github.com/eneassena10/estoque-go/pkg/regras"
 
@@ -12,14 +9,12 @@ import (
 )
 
 type UserController struct {
-	Service entities.IServiceUser
+	Service *service_user.ServiceUser
 }
 
-func NewUserController(database *sql.DB) entities.IUserController {
-	repositoryUser := repository_user.NewRepository(database)
-	serviceUser := service_user.NewServiceUser(repositoryUser)
+func NewUserController(service *service_user.ServiceUser) *UserController {
 	return &UserController{
-		Service: serviceUser,
+		Service: service,
 	}
 }
 

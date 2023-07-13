@@ -1,32 +1,5 @@
 package entities
 
-import "github.com/gin-gonic/gin"
-
-type IUserLogout interface {
-	Logout(u User) error
-}
-type IUserCreated interface {
-	Create(u User) (User, error)
-}
-type IUserLogger interface {
-	Logar(u User) error
-}
-type IUser interface {
-	IUserLogger
-	IUserCreated
-	IUserLogout
-}
-type IRepositoryUser interface {
-	Logar(user User) error
-	Create(user User) error
-	Logout(user User) error
-}
-
-type IServiceUser interface {
-	Logar(ctx *gin.Context, user LoginRequest)
-	Create(ctx *gin.Context, user LoginRequest)
-	Logout(ctx *gin.Context, user LoginRequest)
-}
 type User struct {
 	ID       int
 	Name     string

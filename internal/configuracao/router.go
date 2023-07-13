@@ -19,11 +19,12 @@ var (
 
 type App struct {
 	products *productControllers.ProductControllers
+	// users    *userControllers.UserController
 }
 
-func NewApp(products *productControllers.ProductControllers) *App {
-	app := &App{products: products}
-
+func NewApp(mapServices map[string]interface{}) *App {
+	app := new(App)
+	app.products = mapServices[DomainProduct].(*productControllers.ProductControllers)
 	return app
 }
 
@@ -34,7 +35,7 @@ func (a *App) InitApp(router *gin.Engine) {
 	router.POST(Products, a.products.CreateProducts)
 	router.PATCH(Products, a.products.UpdateProductsCount)
 
-	// router.POST(UserLogin, a.user.Logar)
-	// router.POST(UserLogout, a.user.Logout)
-	// router.POST(UserCreate, a.user.Create)
+	// router.POST(UserLogin, a.users.Logar)
+	// router.POST(UserLogout, a.users.Logout)
+	// router.POST(UserCreate, a.users.Create)
 }

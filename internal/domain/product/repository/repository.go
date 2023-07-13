@@ -1,6 +1,8 @@
 package sqlite3_repository
 
 import (
+	"database/sql"
+
 	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
 	dbsqlite3 "github.com/eneassena10/estoque-go/pkg/conexao/db_sqlite3"
 )
@@ -9,21 +11,34 @@ type ProductRepository struct {
 	operationSql dbsqlite3.IDataBaseOperation
 }
 
-func NewProductRepository(operationSql interface{}) *ProductRepository {
-	opSql := operationSql.(dbsqlite3.IDataBaseOperation)
-	return &ProductRepository{operationSql: opSql}
+func NewProductRepository(operationSql dbsqlite3.IDataBaseOperation) *ProductRepository {
+	return &ProductRepository{operationSql: operationSql}
 }
 
 func (r *ProductRepository) GetProductsAll() *[]entities.ProductRequest {
-	if products := r.operationSql.GetEntityAll("products"); products != nil {
-		productsAll := products.([]entities.ProductRequest)
-		return &productsAll
+	result := r.operationSql.GetEntityAll("products", []string{"id_product", "name", "price", "quantidade"})
+	if result != nil {
+		return r.getProductsAll(result)
 	}
 	return &[]entities.ProductRequest{}
 }
 
+func (r ProductRepository) getProductsAll(result interface{}) *[]entities.ProductRequest {
+	resultQuery := result.(*sql.Rows)
+	resultSet := []entities.ProductRequest{}
+	for resultQuery.Next() {
+		var product entities.ProductRequest
+		err := resultQuery.Scan(&product.ID, &product.Name, &product.Price, &product.Quantidade)
+		if err != nil {
+			return &[]entities.ProductRequest{}
+		}
+		resultSet = append(resultSet, product)
+	}
+	return &resultSet
+}
+
 func (r *ProductRepository) GetProductsOne(product *entities.ProductRequest) *entities.ProductRequest {
-	if resultProduct := r.operationSql.GetEntityByID("products", *product); resultProduct != nil {
+	if resultProduct := r.operationSql.GetEntityByID("products", []string{"id_product", "name", "price", "quantidade"}, *product); resultProduct != nil {
 		p := resultProduct.(entities.ProductRequest)
 		return &p
 	}

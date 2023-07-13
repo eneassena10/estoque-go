@@ -3,14 +3,25 @@ package sqlite3
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
-	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
 	dbsqlite3 "github.com/eneassena10/estoque-go/pkg/conexao/db_sqlite3"
 )
 
 type SQLite3 struct {
-	conexao *sql.DB
+	conexao   *sql.DB
+	resultSet interface{}
 }
+
+const (
+	SELECT = "SELECT"
+	FROM   = "FROM"
+	WHERE  = "WHERE"
+	DELETE = "DELETE"
+	UPDATE = "UPDADE"
+	TABLE  = "TABLE"
+	SET    = "SET"
+)
 
 func NewSQLite3(con *sql.DB) dbsqlite3.IDataBaseOperation {
 	return &SQLite3{
@@ -22,46 +33,39 @@ func (s SQLite3) CreateEntity(entity string, data interface{}) error {
 	return nil
 }
 
-func (s SQLite3) GetEntityAll(entity string) interface{} {
-	query := fmt.Sprintf("SELECT id_product, name, price, quantidade FROM %s", entity)
-	result, err := s.conexao.Query(query)
+func (s SQLite3) GetEntityAll(entity string, fields []string) interface{} {
+	//  entity, fields, estrutura
+	dataFields := strings.Join(fields, ",")
+	dataQuery := fmt.Sprintf("%s %s %s %s", SELECT, dataFields, FROM, entity)
+
+	result, err := s.conexao.Query(dataQuery)
 	if err != nil {
 		return nil
 	}
-
-	products := []entities.ProductRequest{}
-	for result.Next() {
-		var product entities.ProductRequest
-		if err := result.Scan(
-			&product.ID, &product.Name, &product.Price, &product.Quantidade,
-		); err != nil {
-			return &[]entities.ProductRequest{}
-		}
-
-		products = append(products, product)
-	}
-
-	return products
+	s.resultSet = result
+	return s.resultSet
 }
 
-func (s SQLite3) GetEntityByID(entity string, data interface{}) interface{} {
-	product := data.(entities.ProductRequest)
-	query := fmt.Sprintf("SELECT id_product, name, price, quantidade FROM %s WHERE id_product=?", entity)
-	result, err := s.conexao.Query(query, product.ID)
+func (s SQLite3) GetEntityByID(entity string, fields []string, data interface{}) interface{} {
+	dataFields := strings.Join(fields, ",")
+	entityID := data.(int)
+	query := fmt.Sprintf("%s %s %s %s %s %s=?", SELECT, dataFields, FROM, entity, WHERE, dataFields[0])
+	result, err := s.conexao.Query(query, entityID)
 	if err != nil {
 		return nil
 	}
+	s.resultSet = result
 
-	if result.Next() {
-		var product entities.ProductRequest
-		if err := result.Scan(
-			&product.ID, &product.Name, &product.Price, &product.Quantidade,
-		); err != nil {
-			return nil
-		}
-		return product
-	}
-	return nil
+	// if result.Next() {
+	// 	var product entities.ProductRequest
+	// 	if err := result.Scan(
+	// 		&product.ID, &product.Name, &product.Price, &product.Quantidade,
+	// 	); err != nil {
+	// 		return nil
+	// 	}
+	// 	return product
+	// }
+	return s.resultSet
 }
 
 func (s SQLite3) UpdateEntity(entity string, oldData interface{}, data interface{}) error {

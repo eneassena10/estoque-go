@@ -1,20 +1,20 @@
-package service_user
+package serviceUser
 
 import (
 	"net/http"
 
 	"github.com/eneassena10/estoque-go/internal/domain/user/entities"
-	repository_user "github.com/eneassena10/estoque-go/internal/domain/user/repository"
+	repositoryUser "github.com/eneassena10/estoque-go/internal/domain/user/repository"
 	"github.com/eneassena10/estoque-go/pkg/web"
 
 	"github.com/gin-gonic/gin"
 )
 
 type ServiceUser struct {
-	Repository repository_user.Repository
+	Repository *repositoryUser.Repository
 }
 
-func NewServiceUser(repository repository_user.Repository) entities.IServiceUser {
+func NewServiceUser(repository *repositoryUser.Repository) *ServiceUser {
 	service := ServiceUser{Repository: repository}
 	return &service
 }
