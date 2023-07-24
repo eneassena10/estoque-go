@@ -1,7 +1,8 @@
 package configuracao
 
 import (
-	productControllers "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
+	pControllers "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
+	uControllers "github.com/eneassena10/estoque-go/internal/domain/user/controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,29 +12,32 @@ var (
 
 	// ProductsID - usado em rotas que usa o id do produto para uma alteração e leitura
 	ProductsList = "/products/list"
-
-	UserLogin  = "/user/login"
-	UserLogout = "/user/logout"
-	UserCreate = "/user/create"
+	UserLogin    = "/user/login"
+	UserLogout   = "/user/logout"
+	UserCreate   = "/user/create"
 )
 
 type App struct {
-	products *productControllers.ProductControllers
-	// users    *userControllers.UserController
+	Products *pControllers.ProductControllers
+	Users    *uControllers.UserController
 }
 
-func NewApp(mapServices map[string]interface{}) *App {
-	app := new(App)
-	app.products = mapServices[DomainProduct].(*productControllers.ProductControllers)
+func NewApp(mapServices map[HandleNameType]interface{}) *App {
+	app := &App{}
+	app.handlers(mapServices)
 	return app
 }
 
-func (a *App) InitApp(router *gin.Engine) {
-	router.GET(ProductsList, a.products.GetProductsAll)
-	router.GET(Products, a.products.GetProductsByID)
-	router.DELETE(Products, a.products.DeleteProducts)
-	router.POST(Products, a.products.CreateProducts)
-	router.PATCH(Products, a.products.UpdateProductsCount)
+func (a *App) handlers(mapServices map[HandleNameType]interface{}) {
+	a.Products = mapServices[HandleProduct].(*pControllers.ProductControllers)
+}
+
+func (a *App) Routers(router *gin.Engine) {
+	router.GET(ProductsList, a.Products.GetProductsAll)
+	router.GET(Products, a.Products.GetProductsByID)
+	router.DELETE(Products, a.Products.DeleteProducts)
+	router.POST(Products, a.Products.CreateProducts)
+	router.PATCH(Products, a.Products.UpdateProductsCount)
 
 	// router.POST(UserLogin, a.users.Logar)
 	// router.POST(UserLogout, a.users.Logout)

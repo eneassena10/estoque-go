@@ -1,17 +1,17 @@
 package entities
 
 type Product struct {
-	ID         int
-	Name       string
-	Price      float64
-	Quantidade int
+	ID    int
+	Name  string
+	Price float64
+	Count int
 }
 
 type ProductRequest struct {
-	ID         int     `json:"id,omitempty"`
-	Name       string  `json:"name" binding:"required"`
-	Price      float64 `json:"price" binding:"required"`
-	Quantidade int     `json:"quantidade" binding:"required"`
+	ID    int     `json:"id,omitempty"`
+	Name  string  `json:"name,omitempty" binding:"required"`
+	Price float64 `json:"price,omitempty" binding:"required"`
+	Count int     `json:"count,omitempty" binding:"required"`
 }
 
 func NewProduct() *ProductRequest {
@@ -39,9 +39,9 @@ func (p *ProductRequest) WithPrice(price float64) *ProductRequest {
 	return p
 }
 
-func (p *ProductRequest) WithQuantidade(quantidade int) *ProductRequest {
-	if quantidade != 0 {
-		p.Quantidade = quantidade
+func (p *ProductRequest) WithCount(count int) *ProductRequest {
+	if count != 0 {
+		p.Count = count
 	}
 	return p
 }

@@ -13,9 +13,9 @@ type IDataBase interface {
 type IDataBaseOperation interface {
 	GetEntityAll(entity string, fields []string) interface{}
 	GetEntityByID(entity string, fields []string, data interface{}) interface{}
-	CreateEntity(entity string, data interface{}) error
+	CreateEntity(entity string, fields []string, data interface{}) error
 	UpdateEntity(entity string, oldData interface{}, data interface{}) error
-	DeleteEntity(entity string, data interface{}) error
+	DeleteEntity(entity string, fields []string, data interface{}) error
 }
 
 const PATH_DB = "../pkg/conexao/db_sqlite3/data/service.db"

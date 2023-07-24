@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "estoque-go app",
+            "database": "${workspaceFolder:estoque-go}/pkg/conexao/db_sqlite3/data/service.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

@@ -1,8 +1,6 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
 	sqlite3_repository "github.com/eneassena10/estoque-go/internal/domain/product/repository"
 )
@@ -26,11 +24,11 @@ func (s *ProductService) GetProductsOne(product *entities.ProductRequest) *entit
 }
 
 func (s *ProductService) CreateProducts(product *entities.ProductRequest) error {
-	// erroCreate := s.Repository.CreateProducts(product)
-	// if erroCreate == nil {
-	// 	return erroCreate
-	// }
-	return errors.New("não possível criar um novo produto! 'Tente Novamente'")
+	erroCreate := s.Repository.CreateProducts(product)
+	if erroCreate != nil {
+		return erroCreate
+	}
+	return nil
 }
 
 func (s *ProductService) UpdateProductsCount(product *entities.ProductRequest) error {
@@ -43,7 +41,9 @@ func (s *ProductService) UpdateProductsCount(product *entities.ProductRequest) e
 }
 
 func (s *ProductService) DeleteProducts(product *entities.ProductRequest) error {
-	// err := s.Repository.DeleteProducts(product)
-	// return err
+	erroDelete := s.Repository.DeleteProducts(product)
+	if erroDelete != nil {
+		return erroDelete
+	}
 	return nil
 }

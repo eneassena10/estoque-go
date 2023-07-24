@@ -11,12 +11,15 @@ type ProductRepository struct {
 	operationSql dbsqlite3.IDataBaseOperation
 }
 
+const EntityName string = "products"
+
 func NewProductRepository(operationSql dbsqlite3.IDataBaseOperation) *ProductRepository {
 	return &ProductRepository{operationSql: operationSql}
 }
 
 func (r *ProductRepository) GetProductsAll() *[]entities.ProductRequest {
-	result := r.operationSql.GetEntityAll("products", []string{"id_product", "name", "price", "quantidade"})
+	fields := []string{"id_product", "name", "price", "count"}
+	result := r.operationSql.GetEntityAll(EntityName, fields)
 	if result != nil {
 		return r.getProductsAll(result)
 	}
@@ -28,8 +31,7 @@ func (r ProductRepository) getProductsAll(result interface{}) *[]entities.Produc
 	resultSet := []entities.ProductRequest{}
 	for resultQuery.Next() {
 		var product entities.ProductRequest
-		err := resultQuery.Scan(&product.ID, &product.Name, &product.Price, &product.Quantidade)
-		if err != nil {
+		if err := resultQuery.Scan(&product.ID, &product.Name, &product.Price, &product.Count); err != nil {
 			return &[]entities.ProductRequest{}
 		}
 		resultSet = append(resultSet, product)
@@ -38,26 +40,28 @@ func (r ProductRepository) getProductsAll(result interface{}) *[]entities.Produc
 }
 
 func (r *ProductRepository) GetProductsOne(product *entities.ProductRequest) *entities.ProductRequest {
-	if resultProduct := r.operationSql.GetEntityByID("products", []string{"id_product", "name", "price", "quantidade"}, *product); resultProduct != nil {
-		p := resultProduct.(entities.ProductRequest)
-		return &p
+	fields := []string{"id_product", "name", "price", "count"}
+	if result := r.operationSql.GetEntityByID(EntityName, fields, product); result != nil {
+		r := result.(*sql.Row)
+		return getProductsOne(r)
 	}
 	return nil
 }
 
+func getProductsOne(result *sql.Row) *entities.ProductRequest {
+	var product entities.ProductRequest
+	if err := result.Scan(&product.ID, &product.Name, &product.Price, &product.Count); err != nil {
+		return nil
+	}
+	return &product
+}
+
 func (r *ProductRepository) CreateProducts(product *entities.ProductRequest) error {
-	// stmt, err := r.dataBase.Prepare(QUERY_CREATE_PRODUCT)
-	// if err != nil {
-	// 	return err
-	// }
-	// defer stmt.Close()
-	// result, err := stmt.Exec(&product.Name, &product.Price, &product.Quantidade)
-	// if err != nil {
-	// 	return err
-	// }
-	// if rowsAffected, err := result.RowsAffected(); err != nil && rowsAffected == 0 {
-	// 	return err
-	// }
+	fields := []string{"name", "price", "count"}
+	err := r.operationSql.CreateEntity(EntityName, fields, product)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -76,13 +80,9 @@ func (r *ProductRepository) UpdateProductsCount(oldProduct, product *entities.Pr
 }
 
 func (r *ProductRepository) DeleteProducts(product *entities.ProductRequest) error {
-	// result, err := r.dataBase.Exec(QUERY_DELETE_PRODUCT, &product.ID)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// if rowsAffected, err := result.RowsAffected(); err != nil && rowsAffected == 0 {
-	// 	return err
-	// }
+	fields := []string{"id_product"}
+	if err := r.operationSql.DeleteEntity(EntityName, fields, product); err != nil {
+		return err
+	}
 	return nil
 }

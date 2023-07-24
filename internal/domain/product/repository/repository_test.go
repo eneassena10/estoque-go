@@ -1,19 +1,12 @@
 package sqlite3_repository
 
-import (
-	"database/sql"
-	"log"
-
-	"github.com/DATA-DOG/go-sqlmock"
-)
-
-func NewConnectionMock() (*sql.DB, sqlmock.Sqlmock) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		log.Fatalf("erro ao fazer conexão do mock, %s", err.Error())
-	}
-	return db, mock
-}
+// func NewConnectionMock() (*sql.DB, sqlmock.Sqlmock) {
+// 	db, mock, err := sqlmock.New()
+// 	if err != nil {
+// 		log.Fatalf("erro ao fazer conexão do mock, %s", err.Error())
+// 	}
+// 	return db, mock
+// }
 
 /*
 func TestNewProductRepository(t *testing.T) {

@@ -8,21 +8,30 @@ import (
 	dbsqlite3 "github.com/eneassena10/estoque-go/pkg/conexao/db_sqlite3"
 )
 
-const (
-	DomainProduct = "DomainProduct"
-	DomaineUser   = "DomainUser"
+type HandleNameType string
+
+var (
+	HandleProduct HandleNameType = "HandleProduct"
+	HandleUser    HandleNameType = "HandleUser"
 )
 
 func Start() *App {
+	return start()
+}
+
+func start() *App {
+	// conexão com banco de dados
 	conexaoDB := dbsqlite3.DBConnect()
 	operationsSqlite3 := sqlite3.NewSQLite3(conexaoDB)
 
-	repositoryUser := repositoryProduct.NewProductRepository(operationsSqlite3)
-	serviceUser := serviceProduct.NewProductService(repositoryUser)
-	repoProduct := controllers.NewControllers(serviceUser)
+	// dependencias do service de product
+	repositoryProduct := repositoryProduct.NewProductRepository(operationsSqlite3)
+	serviceProduct := serviceProduct.NewProductService(repositoryProduct)
+	repoProduct := controllers.NewControllers(serviceProduct)
 
-	services := map[string]interface{}{
-		DomainProduct: repoProduct,
+	// mappper services
+	services := map[HandleNameType]interface{}{
+		HandleProduct: repoProduct,
 	}
 
 	app := NewApp(services)

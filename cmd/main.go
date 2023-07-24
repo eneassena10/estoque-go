@@ -11,7 +11,7 @@ func main() {
 
 	route.Use(gin.Logger())
 
-	configuracao.Start().InitApp(route)
+	configuracao.Start().Routers(route)
 
 	route.Run(":8080")
 }

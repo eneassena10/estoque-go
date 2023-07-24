@@ -1,7 +1,7 @@
 
 -- users definition
 CREATE TABLE users (
-	id_user INT PRIMARY KEY,
+	id_user INT PRIMARY KEY AUTOINCREMENT,
 	name TEXT,
 	nickname TEXT UNIQUE,
 	password TEXT,
@@ -10,9 +10,9 @@ CREATE TABLE users (
 
 -- products definition
 CREATE TABLE products(
-   id_product INTEGER PRIMARY KEY,
+   id_product INTEGER PRIMARY KEY AUTOINCREMENT,
    name TEXT,
    price DECIMAL,
-   quantidade int
+   count int
 );
 
