@@ -1,8 +1,8 @@
 package controllers
 
 type Response struct {
-	Code int
-	Data interface{}
+	Code int         `json:"code"`
+	Data interface{} `json:"data,omitempty"`
 }
 type ProductRequestBody struct {
 	ID    int     `json:"id,omitempty" binding:"required"`

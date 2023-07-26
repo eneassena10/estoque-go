@@ -21,12 +21,12 @@ func (r *ProductRepository) GetProductsAll() *[]entities.ProductRequest {
 	fields := []string{"id_product", "name", "price", "count"}
 	result := r.operationSql.GetEntityAll(EntityName, fields)
 	if result != nil {
-		return r.getProductsAll(result)
+		return getProductsAll(result)
 	}
 	return &[]entities.ProductRequest{}
 }
 
-func (r ProductRepository) getProductsAll(result interface{}) *[]entities.ProductRequest {
+func getProductsAll(result interface{}) *[]entities.ProductRequest {
 	resultQuery := result.(*sql.Rows)
 	resultSet := []entities.ProductRequest{}
 	for resultQuery.Next() {
@@ -66,16 +66,11 @@ func (r *ProductRepository) CreateProducts(product *entities.ProductRequest) err
 }
 
 func (r *ProductRepository) UpdateProductsCount(oldProduct, product *entities.ProductRequest) error {
-	// if oldProduct != nil && oldProduct.Quantidade+product.Quantidade >= 0 {
-	// 	oldProduct.Quantidade = oldProduct.Quantidade + product.Quantidade
-	// 	result, err := r.dataBase.Exec(QUERY_UPDATE_COUNT_PRODUCT, &oldProduct.Quantidade, &oldProduct.ID)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	if rowsAffected, err := result.RowsAffected(); err != nil && rowsAffected == 0 {
-	// 		return err
-	// 	}
-	// }
+	fields := []string{"id_product", "count"}
+	err := r.operationSql.UpdateEntity(EntityName, fields, oldProduct, product)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
 	sqlite3_repository "github.com/eneassena10/estoque-go/internal/domain/product/repository"
 )
@@ -32,12 +34,11 @@ func (s *ProductService) CreateProducts(product *entities.ProductRequest) error 
 }
 
 func (s *ProductService) UpdateProductsCount(product *entities.ProductRequest) error {
-	// productSearch := s.GetProductsOne(product)
-	// if productSearch == nil {
-	// 	return errors.New("not found product")
-	// }
-	// return s.Repository.UpdateProductsCount(productSearch, product)
-	return nil
+	productSearch := s.GetProductsOne(product)
+	if productSearch == nil {
+		return errors.New("not found product")
+	}
+	return s.Repository.UpdateProductsCount(productSearch, product)
 }
 
 func (s *ProductService) DeleteProducts(product *entities.ProductRequest) error {

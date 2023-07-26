@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/eneassena10/estoque-go/internal/configuracao"
+	"github.com/eneassena10/estoque-go/internal/configs"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -11,7 +11,7 @@ func main() {
 
 	route.Use(gin.Logger())
 
-	configuracao.Start().Routers(route)
+	configs.Start().Routers(route)
 
 	route.Run(":8080")
 }

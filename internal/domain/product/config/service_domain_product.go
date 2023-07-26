@@ -1,4 +1,4 @@
-package product
+package config
 
 import (
 	"github.com/eneassena10/estoque-go/internal/domain/product/controllers"
@@ -11,7 +11,7 @@ type serviceDomainProduct struct {
 	Handler *controllers.ProductControllers
 }
 
-func StartDomain(database dbsqlite3.IDataBaseOperation) *serviceDomainProduct {
+func StartServiceDomainProduct(database dbsqlite3.IDataBaseOperation) *serviceDomainProduct {
 	repositoryUser := repositoryUser.NewProductRepository(database)
 	serviceUser := serviceUser.NewProductService(repositoryUser)
 	repositoryProduct := controllers.NewControllers(serviceUser)

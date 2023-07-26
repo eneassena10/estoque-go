@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/eneassena10/estoque-go/internal/domain/product/entities"
@@ -74,8 +73,8 @@ func (c *ProductControllers) UpdateProductsCount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})
 		return
 	}
-	productResponse := c.Service.GetProductsOne(productUpdateCount)
-	ctx.JSON(http.StatusOK, Response{http.StatusOK, productResponse})
+
+	ctx.JSON(http.StatusNoContent, Response{http.StatusNoContent, nil})
 }
 
 func (c *ProductControllers) DeleteProducts(ctx *gin.Context) {
@@ -83,7 +82,6 @@ func (c *ProductControllers) DeleteProducts(ctx *gin.Context) {
 	if regras.ValidateErrorInRequest(ctx, &requestBody) {
 		return
 	}
-	fmt.Println(requestBody)
 	productDeleted := entities.NewProduct().WithID(requestBody.ID)
 	if err := c.Service.DeleteProducts(productDeleted); err != nil {
 		ctx.JSON(http.StatusInternalServerError, Response{http.StatusInternalServerError, err.Error()})

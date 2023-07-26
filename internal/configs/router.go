@@ -1,4 +1,4 @@
-package configuracao
+package configs
 
 import (
 	pControllers "github.com/eneassena10/estoque-go/internal/domain/product/controllers"
@@ -30,6 +30,7 @@ func NewApp(mapServices map[HandleNameType]interface{}) *App {
 
 func (a *App) handlers(mapServices map[HandleNameType]interface{}) {
 	a.Products = mapServices[HandleProduct].(*pControllers.ProductControllers)
+	a.Users = nil
 }
 
 func (a *App) Routers(router *gin.Engine) {
